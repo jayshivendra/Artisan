@@ -12,8 +12,10 @@ interface HeaderProps {
   audioGuideText?: string;
 }
 
+import { AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
+
 export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGuideText }) => {
-  const { navigateTo, unreadNotifsCount, currentScreen, userRole, setUserRole, setIsLiveDemoOpen } = useAppState();
+  const { navigateTo, goBack, unreadNotifsCount, currentScreen, userRole, setUserRole, setIsLiveDemoOpen } = useAppState();
   const { currentLanguageOption, supportedLanguages, setLanguage, language } = useLanguage();
   const { speak, isSpeaking, stopSpeaking, playChime } = useVoice();
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -22,8 +24,12 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGu
     if (isSpeaking) {
       stopSpeaking();
     } else {
-      const defaultText = audioGuideText || `Welcome to KalaKriti Artisan Platform. You are currently on the ${currentScreen} screen.`;
-      speak(defaultText);
+      const guidanceCategory = currentScreen === 'find_buyers' ? 'buyers' :
+                               currentScreen === 'add_product' ? 'step1' : 'home';
+      const nativeGuidance = AUDIO_GUIDANCE_BY_LANG[guidanceCategory]?.[language] ||
+                             audioGuideText ||
+                             `Welcome to KarigarConnect AI. You are on the ${currentScreen} screen.`;
+      speak(nativeGuidance, currentLanguageOption.voiceLang);
     }
   };
 
@@ -39,7 +45,7 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGu
       <div className="flex items-center space-x-2">
         {showBack ? (
           <button
-            onClick={onBack || (() => navigateTo(userRole === 'buyer' ? 'buyer_marketplace' : 'home'))}
+            onClick={onBack || goBack}
             className="p-1.5 -ml-1 rounded-full hover:bg-stone-100 active:scale-95 text-stone-700 transition-colors"
             title="Go Back"
           >

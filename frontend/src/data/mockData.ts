@@ -52,6 +52,32 @@ export const SAMPLE_HANDICRAFT_PHOTOS = [
     enhanced: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80',
     speech_en: 'Ancient lost-wax cast brass figurine of a tribal musician playing dholak.',
     speech_hi: 'प्राचीन ढोकरा तकनीक से बनी पीतल की आदिवासी संगीतकार मूर्ति।'
+  },
+  {
+    id: 'sample_wood',
+    name: 'Hand-Carved Floral Sheesham Wood Box',
+    category: 'Woodwork',
+    material: 'Seasoned Sheesham Wood & Brass Inlay',
+    making_days: 4,
+    raw_cost: 650,
+    labour_cost: 800,
+    original: 'https://images.unsplash.com/photo-1546484475-7f7bd55792da?w=800&auto=format&fit=crop&q=80',
+    enhanced: 'https://images.unsplash.com/photo-1546484475-7f7bd55792da?w=800&auto=format&fit=crop&q=80',
+    speech_en: 'This decorative trinket box is carved by hand from seasoned sheesham wood with floral brass inlay.',
+    speech_hi: 'यह सुंदर लकड़ी का बॉक्स हाथ से शीशम की लकड़ी पर पीतल की नक्काशी करके बनाया गया है।'
+  },
+  {
+    id: 'sample_decor',
+    name: 'Natural Jute Macrame Hanging Planter',
+    category: 'Home & Decor',
+    material: 'Organic Golden Jute Cord',
+    making_days: 2,
+    raw_cost: 200,
+    labour_cost: 350,
+    original: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=800&auto=format&fit=crop&q=80',
+    enhanced: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=800&auto=format&fit=crop&q=80',
+    speech_en: 'Eco-friendly hand-knotted jute macrame hanger for indoor plants and balcony decor.',
+    speech_hi: 'घर और बालकनी की सजावट के लिए प्राकृतिक जूट से हाथ से बुना गया हैंगिंग प्लांटर।'
   }
 ];
 
@@ -173,7 +199,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     seller_id: 'user_artisan_01',
     name: 'Kashmiri Hand-Carved Walnut Wood Trinket Box',
     images: [
-      'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=800&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1546484475-7f7bd55792da?w=800&auto=format&fit=crop&q=80'
     ],
     description: 'Carved out of single seasoned walnut logs naturally aged for 3 years. Intricate deep-relief carving depicts traditional Chinar leaves and almond blossom motifs, finished with natural beeswax buffing.',
     description_hi: 'कश्मीरी अखरोट की लकड़ी से हाथ से नक्काशीदार आभूषण बॉक्स। चिनार के पत्तों की पारंपरिक कला।',

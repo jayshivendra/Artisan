@@ -15,43 +15,43 @@ const CATEGORIES: CraftCategoryCard[] = [
   {
     id: 'Handloom / Textiles',
     titleKey: 'cat_handloom',
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&auto=format&fit=crop&q=80',
     icon: '🧵'
   },
   {
     id: 'Handicrafts',
     titleKey: 'cat_handicraft',
-    image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80',
     icon: '🎨'
   },
   {
     id: 'Pottery & Clay',
     titleKey: 'cat_pottery',
-    image: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop&q=80',
     icon: '🏺'
   },
   {
     id: 'Jewellery',
     titleKey: 'cat_jewellery',
-    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&auto=format&fit=crop&q=80',
     icon: '💍'
   },
   {
     id: 'Woodwork',
     titleKey: 'cat_woodwork',
-    image: 'https://images.unsplash.com/photo-1590736969955-71cc94801759?w=400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1546484475-7f7bd55792da?w=600&auto=format&fit=crop&q=80',
     icon: '🪵'
   },
   {
     id: 'Home Décor',
     titleKey: 'cat_homedecor',
-    image: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=600&auto=format&fit=crop&q=80',
     icon: '🪔'
   },
   {
     id: 'Other Crafts',
     titleKey: 'cat_other',
-    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1590736969955-71cc94801759?w=600&auto=format&fit=crop&q=80',
     icon: '✨'
   }
 ];

@@ -1,8 +1,8 @@
-﻿import React from 'react';
+import React from 'react';
 import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
 import { useVoice } from '../../context/VoiceContext.js';
-import { Home, Package, Plus, ShoppingBag, User, Heart, Compass, Sparkles } from 'lucide-react';
+import { Home, Package, Plus, ShoppingBag, User, Heart, Compass, Sparkles, Users } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
   const { currentScreen, navigateTo, orders, resetProductDraft, userRole, cart, wishlist } = useAppState();
@@ -168,7 +168,27 @@ export const BottomNav: React.FC = () => {
         </button>
       </div>
 
-      {/* 4. Orders */}
+      {/* 4. Find Buyers (B2B Direct) */}
+      <button
+        onClick={() => handleNav('find_buyers')}
+        className={`flex flex-col items-center justify-center flex-1 py-1.5 px-1 rounded-xl transition-all relative ${
+          currentScreen === 'find_buyers'
+            ? 'text-artisan-indigo font-bold'
+            : 'text-stone-500 hover:text-stone-800'
+        }`}
+      >
+        <div className="relative">
+          <div className={`p-1 rounded-lg ${currentScreen === 'find_buyers' ? 'bg-indigo-50 text-artisan-indigo' : ''}`}>
+            <Users className={`w-5 h-5 ${currentScreen === 'find_buyers' ? 'stroke-[2.5]' : 'stroke-2'}`} />
+          </div>
+          <span className="absolute -top-1 -right-2 px-1 py-0.2 bg-emerald-600 text-white text-[8px] font-black rounded-full shadow">
+            17
+          </span>
+        </div>
+        <span className="text-[11px] mt-0.5 tracking-tight font-bold">Buyers</span>
+      </button>
+
+      {/* 5. Orders */}
       <button
         onClick={() => handleNav('orders')}
         className={`flex flex-col items-center justify-center flex-1 py-1.5 px-1 rounded-xl transition-all relative ${
@@ -188,21 +208,6 @@ export const BottomNav: React.FC = () => {
           )}
         </div>
         <span className="text-[11px] mt-0.5 tracking-tight">{t('nav_orders')}</span>
-      </button>
-
-      {/* 5. Profile */}
-      <button
-        onClick={() => handleNav('profile')}
-        className={`flex flex-col items-center justify-center flex-1 py-1.5 px-1 rounded-xl transition-all ${
-          ['profile', 'edit_profile', 'help_tutorials', 'notifications'].includes(currentScreen)
-            ? 'text-artisan-terracotta font-bold'
-            : 'text-stone-500 hover:text-stone-800'
-        }`}
-      >
-        <div className={`p-1 rounded-lg ${['profile', 'edit_profile', 'help_tutorials', 'notifications'].includes(currentScreen) ? 'bg-artisan-terracottaLight' : ''}`}>
-          <User className={`w-5 h-5 ${['profile', 'edit_profile', 'help_tutorials', 'notifications'].includes(currentScreen) ? 'stroke-[2.5]' : 'stroke-2'}`} />
-        </div>
-        <span className="text-[11px] mt-0.5 tracking-tight">{t('nav_profile')}</span>
       </button>
     </nav>
   );

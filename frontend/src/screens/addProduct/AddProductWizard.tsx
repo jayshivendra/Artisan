@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
-import { useVoice } from '../../context/VoiceContext.js';
+import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
 import { Header } from '../../components/layout/Header.js';
 import { BeforeAfterSlider } from '../../components/common/BeforeAfterSlider.js';
 import { VoiceButton } from '../../components/common/VoiceButton.js';
@@ -10,6 +10,7 @@ import { AudioGuidancePlayer } from '../../components/common/AudioGuidancePlayer
 import { QualityCheckerCard } from '../../components/common/QualityCheckerCard.js';
 import { PricingCalculatorCard } from '../../components/common/PricingCalculatorCard.js';
 import { ProductReadinessMeter } from '../../components/common/ProductReadinessMeter.js';
+import { processImageWithAiStudio } from '../../utils/aiImageStudio.js';
 import { 
   SAMPLE_HANDICRAFT_PHOTOS, 
   BAMBOO_B2B_MATCHES, 
@@ -39,8 +40,8 @@ import {
 import confetti from 'canvas-confetti';
 
 export const AddProductWizard: React.FC = () => {
-  const { productDraft, updateProductDraft, resetProductDraft, addProduct, navigateTo, user } = useAppState();
-  const { t, language } = useLanguage();
+  const { productDraft, updateProductDraft, resetProductDraft, addProduct, navigateTo, goBack, user } = useAppState();
+  const { t, language, currentLanguageOption } = useLanguage();
   const { speak, playChime, isListening, startListening, stopListening } = useVoice();
 
   const [isEnhancing, setIsEnhancing] = useState<boolean>(false);
@@ -50,7 +51,41 @@ export const AddProductWizard: React.FC = () => {
 
   const step = productDraft.step;
 
-  // Step 1: Select demo handicraft or upload photo
+  // Real AI Studio enhancement processing on any photo (uploaded, captured, or sample)
+  const triggerEnhancement = async (
+    rawUrl: string, 
+    preset: 'studio' | 'white' | 'light' | 'original' = 'studio', 
+    preEnhancedUrl?: string
+  ) => {
+    setIsEnhancing(true);
+    updateProductDraft({ step: 2, photoUrl: rawUrl, selectedBgPreset: preset });
+
+    const announcement = AUDIO_GUIDANCE_BY_LANG.step2?.[language] ||
+      'AI Photo Studio is removing cluttered background, balancing studio lighting, and adding natural soft shadows.';
+    speak(announcement, currentLanguageOption.voiceLang);
+
+    if (preEnhancedUrl) {
+      setTimeout(() => {
+        setIsEnhancing(false);
+        playChime('success');
+        updateProductDraft({ enhancedPhotoUrl: preEnhancedUrl });
+      }, 700);
+      return;
+    }
+
+    try {
+      const processed = await processImageWithAiStudio(rawUrl, { preset });
+      setIsEnhancing(false);
+      playChime('success');
+      updateProductDraft({ enhancedPhotoUrl: processed });
+    } catch (e) {
+      console.warn('Canvas studio processing error:', e);
+      setIsEnhancing(false);
+      updateProductDraft({ enhancedPhotoUrl: rawUrl });
+    }
+  };
+
+  // Step 1: Select demo handicraft
   const handleSelectSample = (sample: typeof SAMPLE_HANDICRAFT_PHOTOS[0]) => {
     playChime('tap');
     const dynamicPricing = calculateDynamicPrice(sample.raw_cost, sample.making_days, sample.category);
@@ -75,9 +110,10 @@ export const AddProductWizard: React.FC = () => {
       voiceText: sample.speech_hi || sample.speech_en
     });
 
-    triggerEnhancement(sample.original, sample.enhanced);
+    triggerEnhancement(sample.original, 'studio', sample.enhanced);
   };
 
+  // Step 1: Real photo upload from gallery or camera capture
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       playChime('tap');
@@ -85,31 +121,21 @@ export const AddProductWizard: React.FC = () => {
       const reader = new FileReader();
       reader.onload = (event) => {
         const url = event.target?.result as string;
-        updateProductDraft({ photoUrl: url, enhancedPhotoUrl: url });
-        triggerEnhancement(url, url);
+        updateProductDraft({ photoUrl: url });
+        triggerEnhancement(url, 'studio');
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const triggerEnhancement = (rawUrl: string, enhancedUrl?: string) => {
-    setIsEnhancing(true);
-    updateProductDraft({ step: 2 });
-    speak('AI Photo Studio is removing cluttered background, balancing studio lighting, and adding natural soft shadows.');
-
-    // Simulated / fallback studio processing
-    setTimeout(() => {
-      setIsEnhancing(false);
-      playChime('success');
-      if (enhancedUrl) {
-        updateProductDraft({ enhancedPhotoUrl: enhancedUrl });
-      }
-    }, 1200);
-  };
-
-  const handleBgPresetChange = (preset: 'studio' | 'white' | 'light' | 'original') => {
+  // Step 2: Switch studio preset and re-process image in real time
+  const handleBgPresetChange = async (preset: 'studio' | 'white' | 'light' | 'original') => {
     playChime('tap');
     updateProductDraft({ selectedBgPreset: preset });
+    setIsEnhancing(true);
+    const enhanced = await processImageWithAiStudio(productDraft.photoUrl, { preset });
+    setIsEnhancing(false);
+    updateProductDraft({ enhancedPhotoUrl: enhanced });
   };
 
   // Step 3: Voice-to-Catalog Input
@@ -222,7 +248,7 @@ export const AddProductWizard: React.FC = () => {
           showBack={true}
           onBack={() => {
             if (step > 1) updateProductDraft({ step: step - 1 });
-            else navigateTo('home');
+            else goBack();
           }}
           audioGuideText={`Step ${step}: ${
             step === 1 ? 'Take a photo of your craft. Cluttered backgrounds are fine, our AI will clean it.' :
@@ -286,14 +312,14 @@ export const AddProductWizard: React.FC = () => {
             />
             <div className="relative z-10 flex flex-col items-center text-center p-4">
               <button
-                onClick={() => triggerEnhancement(productDraft.photoUrl, productDraft.enhancedPhotoUrl)}
+                onClick={() => triggerEnhancement(productDraft.photoUrl, 'studio')}
                 className="w-16 h-16 rounded-full bg-white text-artisan-terracotta shadow-2xl flex items-center justify-center hover:scale-110 active:scale-90 transition-transform mb-2"
                 title="Capture Photo"
               >
                 <Camera className="w-8 h-8 stroke-[2.5]" />
               </button>
               <span className="text-xs font-black drop-shadow bg-black/60 px-3 py-1 rounded-full">
-                Tap to Snap Photo
+                Tap to Process with AI
               </span>
             </div>
 
@@ -308,17 +334,25 @@ export const AddProductWizard: React.FC = () => {
           <QualityCheckerCard
             alerts={INITIAL_QUALITY_ALERTS}
             isEnhanced={false}
-            onAutoFix={() => triggerEnhancement(productDraft.photoUrl, productDraft.enhancedPhotoUrl)}
+            onAutoFix={() => triggerEnhancement(productDraft.photoUrl, 'studio')}
             isFixing={isEnhancing}
           />
 
-          {/* Upload or Demo Sample Selection */}
-          <div className="space-y-3 pt-1">
-            <label className="w-full py-3.5 px-4 rounded-2xl bg-stone-900 text-white font-extrabold text-xs shadow-sm flex items-center justify-center space-x-2 cursor-pointer active:scale-95 transition-all text-center">
-              <Upload className="w-4 h-4" />
-              <span>Upload Photo from Phone Gallery</span>
-              <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
-            </label>
+          {/* Dual Camera and Gallery Upload Actions */}
+          <div className="space-y-2 pt-1">
+            <div className="grid grid-cols-2 gap-2">
+              <label className="py-3.5 px-3 rounded-2xl bg-gradient-to-r from-artisan-terracotta to-orange-500 text-white font-black text-xs shadow-elevated flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95 transition-all text-center">
+                <Camera className="w-4 h-4 stroke-[2.5]" />
+                <span>📸 Open Camera</span>
+                <input type="file" accept="image/*" capture="environment" onChange={handleFileUpload} className="hidden" />
+              </label>
+
+              <label className="py-3.5 px-3 rounded-2xl bg-stone-900 text-white font-black text-xs shadow-sm flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95 transition-all text-center">
+                <Upload className="w-4 h-4 stroke-[2.5]" />
+                <span>🖼️ Phone Gallery</span>
+                <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+              </label>
+            </div>
 
             {/* Quick Demo Craft Photos */}
             <div>

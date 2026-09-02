@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { UserProfile, Product, Order, BuyerRequirement, AISuggestion, NotificationItem, ScreenType, CartItem, QualityCheckAlert, B2BMatch } from '../types/index.js';
 import { INITIAL_PRODUCTS, INITIAL_ORDERS, INITIAL_BUYERS, INITIAL_SUGGESTIONS, INITIAL_NOTIFICATIONS, BAMBOO_B2B_MATCHES, INITIAL_QUALITY_ALERTS } from '../data/mockData.js';
 
@@ -94,6 +94,7 @@ const initialDraftState: AddProductDraft = {
 interface AppStateContextType {
   currentScreen: ScreenType;
   navigateTo: (screen: ScreenType) => void;
+  goBack: () => void;
   user: UserProfile;
   updateUser: (updates: Partial<UserProfile>) => void;
   userRole: 'seller' | 'buyer';
@@ -248,10 +249,57 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       .catch(() => {});
   }, []);
 
+  const [screenHistory, setScreenHistory] = useState<ScreenType[]>(['home']);
+
   const navigateTo = (screen: ScreenType) => {
+    if (screen !== currentScreen) {
+      setScreenHistory(prev => [...prev, screen]);
+      if (typeof window !== 'undefined' && window.history) {
+        window.history.pushState({ screen }, '', `#${screen}`);
+      }
+    }
     setCurrentScreen(screen);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const goBack = useCallback(() => {
+    // If inside AddProductWizard and step > 1, go back one step
+    if (currentScreen === 'add_product' && productDraft.step > 1) {
+      setProductDraft(prev => ({ ...prev, step: prev.step - 1 }));
+      return;
+    }
+
+    setScreenHistory(prev => {
+      if (prev.length > 1) {
+        const nextHistory = prev.slice(0, -1);
+        const previousScreen = nextHistory[nextHistory.length - 1];
+        setCurrentScreen(previousScreen);
+        return nextHistory;
+      } else {
+        const fallback = userRole === 'buyer' ? 'buyer_marketplace' : 'home';
+        setCurrentScreen(fallback);
+        return [fallback];
+      }
+    });
+  }, [currentScreen, productDraft.step, userRole]);
+
+  // Intercept mobile browser and hardware back button
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.history) {
+      window.history.replaceState({ screen: currentScreen }, '', `#${currentScreen}`);
+
+      const handlePopState = (event: PopStateEvent) => {
+        if (event.state && event.state.screen) {
+          setCurrentScreen(event.state.screen);
+        } else {
+          goBack();
+        }
+      };
+
+      window.addEventListener('popstate', handlePopState);
+      return () => window.removeEventListener('popstate', handlePopState);
+    }
+  }, [currentScreen, goBack]);
 
   const updateUser = (updates: Partial<UserProfile>) => {
     setUser(prev => {
@@ -433,6 +481,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       value={{
         currentScreen,
         navigateTo,
+        goBack,
         user,
         updateUser,
         userRole,
