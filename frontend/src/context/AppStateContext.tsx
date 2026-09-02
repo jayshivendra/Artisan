@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { UserProfile, Product, Order, BuyerRequirement, AISuggestion, NotificationItem, ScreenType } from '../types/index.js';
+﻿import React, { createContext, useContext, useState, useEffect } from 'react';
+import { UserProfile, Product, Order, BuyerRequirement, AISuggestion, NotificationItem, ScreenType, CartItem } from '../types/index.js';
 import { INITIAL_PRODUCTS, INITIAL_ORDERS, INITIAL_BUYERS, INITIAL_SUGGESTIONS, INITIAL_NOTIFICATIONS } from '../data/mockData.js';
 
 interface AddProductDraft {
@@ -75,6 +75,9 @@ interface AppStateContextType {
   navigateTo: (screen: ScreenType) => void;
   user: UserProfile;
   updateUser: (updates: Partial<UserProfile>) => void;
+  userRole: 'seller' | 'buyer';
+  setUserRole: (role: 'seller' | 'buyer') => void;
+  toggleUserRole: () => void;
   products: Product[];
   addProduct: (product: Product) => void;
   updateProduct: (id: string, updates: Partial<Product>) => void;
@@ -98,6 +101,16 @@ interface AppStateContextType {
   resetProductDraft: () => void;
   isMobileDeviceView: boolean;
   setIsMobileDeviceView: (val: boolean) => void;
+  
+  // Buyer Platform Specifics
+  cart: CartItem[];
+  addToCart: (product: Product, quantity?: number) => void;
+  removeFromCart: (productId: string) => void;
+  updateCartQuantity: (productId: string, delta: number) => void;
+  clearCart: () => void;
+  wishlist: string[];
+  toggleWishlist: (productId: string) => void;
+  createBuyerOrder: (items: CartItem[], address: string, paymentMethod: string) => Order;
 }
 
 const AppStateContext = createContext<AppStateContextType | undefined>(undefined);
@@ -110,6 +123,24 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const [isMobileDeviceView, setIsMobileDeviceView] = useState<boolean>(true);
 
+  const [userRole, setUserRoleState] = useState<'seller' | 'buyer'>(() => {
+    return (localStorage.getItem('karigar_role') as 'seller' | 'buyer') || 'seller';
+  });
+
+  const setUserRole = (role: 'seller' | 'buyer') => {
+    setUserRoleState(role);
+    localStorage.setItem('karigar_role', role);
+    if (role === 'buyer') {
+      navigateTo('buyer_marketplace');
+    } else {
+      navigateTo('home');
+    }
+  };
+
+  const toggleUserRole = () => {
+    setUserRole(userRole === 'seller' ? 'buyer' : 'seller');
+  };
+
   const [user, setUser] = useState<UserProfile>(() => {
     const saved = localStorage.getItem('karigar_user');
     if (saved) {
@@ -119,13 +150,18 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
     return {
       id: 'user_artisan_01',
-      name: 'Lakshmi Devi',
+      name: 'Pandit Ramswaroop Sharma',
       phone: '+91 98480 22334',
-      preferred_language: 'te',
-      craft_categories: ['Handloom / Textiles', 'Handicrafts'],
-      location: 'Pochampally, Telangana, India',
-      business_name: 'Lakshmi Pochampally Handlooms',
+      preferred_language: 'hi',
+      craft_categories: ['Pottery & Clay', 'Handicrafts'],
+      location: 'Jaipur, Rajasthan, India',
+      business_name: 'Royal Heritage Blue Pottery & Crafts',
       avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80',
+      bio: 'Preserving the 500-year-old royal Jaipur blue pottery tradition using quartz stone and mineral pigments.',
+      upi_id: 'ramswaroop.crafts@upi',
+      bank_name: 'State Bank of India',
+      bank_account: '•••• •••• •••• 4529',
+      role: 'seller',
       is_onboarded: true
     };
   });
@@ -143,6 +179,17 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
 
   const [productDraft, setProductDraft] = useState<AddProductDraft>(initialDraftState);
+
+  // Buyer State
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    const saved = localStorage.getItem('karigar_cart');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [wishlist, setWishlist] = useState<string[]>(() => {
+    const saved = localStorage.getItem('karigar_wishlist');
+    return saved ? JSON.parse(saved) : ['prod_001', 'prod_002'];
+  });
 
   // Sync to Backend if running, fallback seamlessly
   useEffect(() => {
@@ -192,7 +239,6 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const addProduct = (product: Product) => {
     setProducts(prev => [product, ...prev]);
-    // Try POST to backend
     fetch('/api/products', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -271,6 +317,90 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setProductDraft({ ...initialDraftState, step: 1 });
   };
 
+  // Buyer Cart Operations
+  const addToCart = (product: Product, quantity = 1) => {
+    setCart(prev => {
+      const idx = prev.findIndex(item => item.product.id === product.id);
+      let updated: CartItem[];
+      if (idx > -1) {
+        updated = [...prev];
+        updated[idx].quantity += quantity;
+      } else {
+        updated = [...prev, { product, quantity }];
+      }
+      localStorage.setItem('karigar_cart', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const removeFromCart = (productId: string) => {
+    setCart(prev => {
+      const updated = prev.filter(item => item.product.id !== productId);
+      localStorage.setItem('karigar_cart', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const updateCartQuantity = (productId: string, delta: number) => {
+    setCart(prev => {
+      const idx = prev.findIndex(item => item.product.id === productId);
+      if (idx === -1) return prev;
+      const updated = [...prev];
+      updated[idx].quantity += delta;
+      if (updated[idx].quantity <= 0) {
+        return prev.filter(item => item.product.id !== productId);
+      }
+      localStorage.setItem('karigar_cart', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const clearCart = () => {
+    setCart([]);
+    localStorage.removeItem('karigar_cart');
+  };
+
+  const toggleWishlist = (productId: string) => {
+    setWishlist(prev => {
+      const updated = prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId];
+      localStorage.setItem('karigar_wishlist', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const createBuyerOrder = (items: CartItem[], address: string, paymentMethod: string): Order => {
+    const firstItem = items[0];
+    const totalAmount = items.reduce((sum, i) => sum + (i.product.selling_price * i.quantity), 0);
+    const newOrder: Order = {
+      id: `ord_${Date.now()}`,
+      order_number: `ORD-${Math.floor(10000 + Math.random() * 90000)}`,
+      buyer_id: user.id || 'buyer_user',
+      buyer_name: user.name || 'Patron',
+      buyer_phone: user.phone || '+91 98765 43210',
+      buyer_location: user.location || 'India',
+      seller_id: firstItem?.product.seller_id || 'user_artisan_01',
+      product_id: firstItem?.product.id || 'prod_001',
+      product_name: items.length > 1 ? `${firstItem?.product.name} (+${items.length - 1} items)` : firstItem?.product.name,
+      product_image: firstItem?.product.images[0] || firstItem?.product.original_image || '',
+      quantity: items.reduce((s, i) => s + i.quantity, 0),
+      unit_price: firstItem?.product.selling_price || totalAmount,
+      total_amount: totalAmount,
+      status: 'processing',
+      status_step: 2,
+      created_at: new Date().toISOString(),
+      shipping_address: address,
+      courier_partner: 'India Post Speed Post',
+      tracking_id: `INP${Math.floor(10000000 + Math.random() * 90000000)}`,
+      payment_method: paymentMethod
+    };
+
+    setOrders(prev => [newOrder, ...prev]);
+    clearCart();
+    return newOrder;
+  };
+
   return (
     <AppStateContext.Provider
       value={{
@@ -278,6 +408,9 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         navigateTo,
         user,
         updateUser,
+        userRole,
+        setUserRole,
+        toggleUserRole,
         products,
         addProduct,
         updateProduct,
@@ -300,7 +433,15 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         updateProductDraft,
         resetProductDraft,
         isMobileDeviceView,
-        setIsMobileDeviceView
+        setIsMobileDeviceView,
+        cart,
+        addToCart,
+        removeFromCart,
+        updateCartQuantity,
+        clearCart,
+        wishlist,
+        toggleWishlist,
+        createBuyerOrder
       }}
     >
       {children}

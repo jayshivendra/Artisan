@@ -1,4 +1,4 @@
-export type LanguageCode = 'en' | 'hi' | 'te' | 'ta' | 'bn' | 'mr' | 'gu' | 'kn' | 'ml' | 'pa';
+﻿export type LanguageCode = 'en' | 'hi' | 'te' | 'ta' | 'bn' | 'mr' | 'gu' | 'kn' | 'ml' | 'pa';
 
 export interface LanguageOption {
   code: LanguageCode;
@@ -25,6 +25,11 @@ export type ScreenType =
   | 'gov_marketplace'
   | 'notifications'
   | 'profile'
+  | 'edit_profile'
+  | 'buyer_marketplace'
+  | 'buyer_cart'
+  | 'buyer_orders'
+  | 'buyer_wishlist'
   | 'help_tutorials';
 
 export interface UserProfile {
@@ -36,7 +41,17 @@ export interface UserProfile {
   location: string;
   business_name: string;
   avatar?: string;
+  bio?: string;
+  upi_id?: string;
+  bank_name?: string;
+  bank_account?: string;
+  role?: 'seller' | 'buyer';
   is_onboarded: boolean;
+}
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
 }
 
 export interface Product {
@@ -62,6 +77,9 @@ export interface Product {
   suggested_price: number;
   selling_price: number;
   status: 'active' | 'low_stock' | 'draft' | 'archived';
+  artisan_name?: string;
+  origin_region?: string;
+  badge?: string;
   channels: {
     app_store: boolean;
     govt_marketplace: boolean;
@@ -91,6 +109,7 @@ export interface Order {
   shipping_address: string;
   courier_partner?: string;
   tracking_id?: string;
+  payment_method?: string;
 }
 
 export interface BuyerRequirement {

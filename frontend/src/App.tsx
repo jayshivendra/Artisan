@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useAppState } from './context/AppStateContext.js';
 import { MobileFrame } from './components/layout/MobileFrame.js';
 import { BottomNav } from './components/layout/BottomNav.js';
@@ -21,7 +21,14 @@ import { SalesDashboard } from './screens/dashboard/SalesDashboard.js';
 import { GovMarketplaceHub } from './screens/govMarketplace/GovMarketplaceHub.js';
 import { NotificationsScreen } from './screens/profile/NotificationsScreen.js';
 import { ProfileScreen } from './screens/profile/ProfileScreen.js';
+import { EditProfileScreen } from './screens/profile/EditProfileScreen.js';
 import { HelpTutorialsScreen } from './screens/profile/HelpTutorialsScreen.js';
+
+// Buyer Platform Screens
+import { BuyerMarketplaceScreen } from './screens/buyers/BuyerMarketplaceScreen.js';
+import { BuyerCartScreen } from './screens/buyers/BuyerCartScreen.js';
+import { BuyerOrdersScreen } from './screens/buyers/BuyerOrdersScreen.js';
+import { BuyerWishlistScreen } from './screens/buyers/BuyerWishlistScreen.js';
 
 export const App: React.FC = () => {
   const { currentScreen } = useAppState();
@@ -58,6 +65,16 @@ export const App: React.FC = () => {
         return <NotificationsScreen />;
       case 'profile':
         return <ProfileScreen />;
+      case 'edit_profile':
+        return <EditProfileScreen />;
+      case 'buyer_marketplace':
+        return <BuyerMarketplaceScreen />;
+      case 'buyer_cart':
+        return <BuyerCartScreen />;
+      case 'buyer_orders':
+        return <BuyerOrdersScreen />;
+      case 'buyer_wishlist':
+        return <BuyerWishlistScreen />;
       case 'help_tutorials':
         return <HelpTutorialsScreen />;
       default:
