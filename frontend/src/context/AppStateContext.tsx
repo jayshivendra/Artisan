@@ -1,8 +1,8 @@
-﻿import React, { createContext, useContext, useState, useEffect } from 'react';
-import { UserProfile, Product, Order, BuyerRequirement, AISuggestion, NotificationItem, ScreenType, CartItem } from '../types/index.js';
-import { INITIAL_PRODUCTS, INITIAL_ORDERS, INITIAL_BUYERS, INITIAL_SUGGESTIONS, INITIAL_NOTIFICATIONS } from '../data/mockData.js';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { UserProfile, Product, Order, BuyerRequirement, AISuggestion, NotificationItem, ScreenType, CartItem, QualityCheckAlert, B2BMatch } from '../types/index.js';
+import { INITIAL_PRODUCTS, INITIAL_ORDERS, INITIAL_BUYERS, INITIAL_SUGGESTIONS, INITIAL_NOTIFICATIONS, BAMBOO_B2B_MATCHES, INITIAL_QUALITY_ALERTS } from '../data/mockData.js';
 
-interface AddProductDraft {
+export interface AddProductDraft {
   step: number;
   photoUrl: string;
   enhancedPhotoUrl: string;
@@ -16,11 +16,18 @@ interface AddProductDraft {
   making_time_days: number;
   dimensions: string;
   colour: string;
+  usage: string;
+  keywords: string[];
   description_en: string;
   description_hi: string;
   description_reg: string;
   raw_material_cost: number;
   labour_cost: number;
+  packaging_cost: number;
+  logistics_cost: number;
+  estimated_base_cost: number;
+  market_ref_min: number;
+  market_ref_max: number;
   suggested_price: number;
   selling_price: number;
   price_range_min: number;
@@ -28,6 +35,9 @@ interface AddProductDraft {
   artisan_profit: number;
   pricing_explanation: string;
   quantity: number;
+  readiness_score: number;
+  quality_alerts: QualityCheckAlert[];
+  b2b_matches: B2BMatch[];
   channels: {
     app_store: boolean;
     govt_marketplace: boolean;
@@ -38,30 +48,40 @@ interface AddProductDraft {
 
 const initialDraftState: AddProductDraft = {
   step: 1,
-  photoUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&auto=format&fit=crop&q=80',
-  enhancedPhotoUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&auto=format&fit=crop&q=80',
+  photoUrl: 'https://images.unsplash.com/photo-1595079672139-62294316750c?w=800&auto=format&fit=crop&q=80',
+  enhancedPhotoUrl: 'https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=800&auto=format&fit=crop&q=80',
   selectedBgPreset: 'studio',
-  voiceText: '',
-  name: 'Handwoven Pochampally Ikat Silk Saree',
-  category: 'Handloom / Textiles',
-  material: 'Pure Mulberry Silk & Natural Zari',
-  craft_type: 'Double-Ikat Handloom Weave',
-  production_method: '100% Handmade',
-  making_time_days: 6,
-  dimensions: '5.5m Saree with 0.8m Blouse',
-  colour: 'Royal Indigo Blue & Crimson',
-  description_en: 'Authentic Handwoven Pochampally Ikat silk saree meticulously handcrafted by master rural artisans using pure mulberry silk and natural dyes.',
-  description_hi: 'पारंपरिक ग्रामीण कारीगरों द्वारा शुद्ध रेशम और प्राकृतिक रंगों से निर्मित पोचमपल्ली इकत सिल्क साड़ी।',
-  description_reg: 'పోచంపల్లి ఇక్కత్ స్వచ్ఛమైన పట్టు చీర. సహజ రంగులతో సాంప్రదాయ మగ్గంపై తయారు చేయబడింది.',
-  raw_material_cost: 2800,
-  labour_cost: 2400,
-  suggested_price: 6999,
-  selling_price: 6999,
-  price_range_min: 6299,
-  price_range_max: 7699,
-  artisan_profit: 1799,
-  pricing_explanation: 'Based on your material cost of ₹2,800, 6 days of skilled handmade labour, and current festive demand, ₹6,999 is a competitive and fair price.',
-  quantity: 10,
+  voiceText: 'This basket is made from bamboo. It is handmade and takes two days to make. It can be used for storing clothes and household items.',
+  name: 'Handcrafted Bamboo Storage Basket',
+  category: 'Home & Decor',
+  material: 'Natural Bamboo & Cane Strips',
+  craft_type: '100% Traditional Handwoven',
+  production_method: 'Handmade',
+  making_time_days: 2,
+  dimensions: '14" Diameter x 10" Height',
+  colour: 'Natural Golden Honey Bamboo',
+  usage: 'Storage / Laundry / Home decoration',
+  keywords: ['bamboo basket', 'handmade basket', 'eco-friendly storage', 'traditional handicraft', 'home decor'],
+  description_en: 'A premium handcrafted storage basket woven from seasoned natural bamboo. Ideal for eco-friendly living, multi-purpose clothes storage, and minimalist home decor.',
+  description_hi: 'प्राकृतिक बांस से निर्मित हस्तनिर्मित स्टोरेज टोकरी। कपड़े और घरेलू सामान सुरक्षित रखने के लिए सर्वोत्तम।',
+  description_reg: 'సహజ వెదురుతో చేతితో అల్లిన అందమైన నిల్వ బుట్ట.',
+  raw_material_cost: 350,
+  labour_cost: 300,
+  packaging_cost: 50,
+  logistics_cost: 100,
+  estimated_base_cost: 800,
+  market_ref_min: 850,
+  market_ref_max: 1100,
+  suggested_price: 949,
+  selling_price: 949,
+  price_range_min: 899,
+  price_range_max: 999,
+  artisan_profit: 449,
+  pricing_explanation: 'AI-assisted price recommendation based on available product, cost and market-reference data: Raw material ₹350 + Labour estimate ₹300 (2 days) + Packaging ₹50 + Platform/Logistics ₹100 = Base cost ₹800. Market reference ₹850–₹1,100.',
+  quantity: 24,
+  readiness_score: 91,
+  quality_alerts: INITIAL_QUALITY_ALERTS,
+  b2b_matches: BAMBOO_B2B_MATCHES,
   channels: {
     app_store: true,
     govt_marketplace: true,
@@ -69,6 +89,7 @@ const initialDraftState: AddProductDraft = {
     ondc: true
   }
 };
+
 
 interface AppStateContextType {
   currentScreen: ScreenType;
@@ -111,6 +132,10 @@ interface AppStateContextType {
   wishlist: string[];
   toggleWishlist: (productId: string) => void;
   createBuyerOrder: (items: CartItem[], address: string, paymentMethod: string) => Order;
+
+  // Hackathon Live Demo Walkthrough
+  isLiveDemoOpen: boolean;
+  setIsLiveDemoOpen: (val: boolean) => void;
 }
 
 const AppStateContext = createContext<AppStateContextType | undefined>(undefined);
@@ -122,6 +147,8 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   });
 
   const [isMobileDeviceView, setIsMobileDeviceView] = useState<boolean>(true);
+  const [isLiveDemoOpen, setIsLiveDemoOpen] = useState<boolean>(false);
+
 
   const [userRole, setUserRoleState] = useState<'seller' | 'buyer'>(() => {
     return (localStorage.getItem('karigar_role') as 'seller' | 'buyer') || 'seller';
@@ -441,7 +468,9 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         clearCart,
         wishlist,
         toggleWishlist,
-        createBuyerOrder
+        createBuyerOrder,
+        isLiveDemoOpen,
+        setIsLiveDemoOpen
       }}
     >
       {children}

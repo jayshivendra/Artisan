@@ -136,21 +136,48 @@ export const FindBuyersScreen: React.FC = () => {
 
               {/* Title & Details */}
               <div>
-                <h4 className="font-black text-stone-900 text-sm leading-snug">
-                  {req.title}
-                </h4>
+                <div className="flex items-center justify-between mb-1">
+                  <h4 className="font-black text-stone-900 text-sm leading-snug">
+                    {req.title}
+                  </h4>
+                  {req.id === 'req_03' && (
+                    <span className="text-xs font-black bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded-lg shrink-0 ml-2">
+                      92% Match
+                    </span>
+                  )}
+                  {req.id === 'req_06' && (
+                    <span className="text-xs font-black bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded-lg shrink-0 ml-2">
+                      88% Match
+                    </span>
+                  )}
+                  {req.id === 'req_04' && (
+                    <span className="text-xs font-black bg-amber-100 text-amber-900 px-2 py-0.5 rounded-lg shrink-0 ml-2">
+                      74% Match
+                    </span>
+                  )}
+                  {req.id === 'req_05' && (
+                    <span className="text-xs font-black bg-stone-200 text-stone-800 px-2 py-0.5 rounded-lg shrink-0 ml-2">
+                      61% Match
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-stone-700 font-medium mt-1 leading-relaxed">
                   {req.details}
                 </p>
+                {req.id === 'req_03' && (
+                  <div className="mt-2 p-2 bg-emerald-50 border border-emerald-200 rounded-xl text-[11px] font-bold text-emerald-900">
+                    🎯 AI Match Reason: Handcrafted Bamboo Storage Basket fits buyer's 50-unit threshold and target budget of ₹850–₹1,000/pc.
+                  </div>
+                )}
               </div>
 
               {/* Requirement Metrics Chips */}
               <div className="grid grid-cols-2 gap-2 text-[11px] font-bold text-stone-700">
                 <div className="bg-stone-50 p-2 rounded-xl border border-stone-100">
-                  Qty: <span className="font-extrabold text-stone-900">{req.quantity_needed}</span>
+                  Min Order: <span className="font-extrabold text-stone-900">{req.quantity_needed}</span>
                 </div>
                 <div className="bg-amber-50 text-amber-900 p-2 rounded-xl border border-amber-200/70">
-                  Budget: <span className="font-black">{req.budget_per_unit}</span>
+                  Target Budget: <span className="font-black">{req.budget_per_unit}</span>
                 </div>
               </div>
 
@@ -160,7 +187,7 @@ export const FindBuyersScreen: React.FC = () => {
                 className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-artisan-indigo via-blue-700 to-indigo-600 text-white font-extrabold text-xs shadow-md flex items-center justify-center space-x-2 active:scale-95 transition-all hover:shadow-lg"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>{t('btn_send_proposal')}</span>
+                <span>Submit Wholesale Proposal</span>
               </button>
             </div>
           ))}

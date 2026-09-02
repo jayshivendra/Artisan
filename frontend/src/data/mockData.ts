@@ -1,6 +1,98 @@
-﻿import { Product, Order, BuyerRequirement, AISuggestion, NotificationItem } from '../types/index.js';
+import { Product, Order, BuyerRequirement, AISuggestion, NotificationItem, B2BMatch, PricingBreakdown, QualityCheckAlert } from '../types/index.js';
+
+export const SAMPLE_HANDICRAFT_PHOTOS = [
+  {
+    id: 'sample_bamboo',
+    name: 'Handmade Bamboo Storage Basket',
+    category: 'Home & Decor',
+    material: 'Natural Bamboo & Cane',
+    making_days: 2,
+    raw_cost: 350,
+    labour_cost: 300,
+    original: 'https://images.unsplash.com/photo-1595079672139-62294316750c?w=800&auto=format&fit=crop&q=80',
+    enhanced: 'https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=800&auto=format&fit=crop&q=80',
+    speech_en: 'This basket is made from natural bamboo. It is 100% handmade and takes two days of weaving to make. It can be used for storing clothes, laundry, and household items.',
+    speech_hi: 'यह टोकरी प्राकृतिक बांस से बनी है। यह पूरी तरह से हस्तनिर्मित है और इसे बनाने में दो दिन का समय लगता है। इसका उपयोग कपड़े और घरेलू सामान रखने के लिए किया जा सकता है।'
+  },
+  {
+    id: 'sample_pottery',
+    name: 'Terracotta Handcrafted Water Jug',
+    category: 'Pottery & Clay',
+    material: 'Natural Terracotta Clay',
+    making_days: 3,
+    raw_cost: 250,
+    labour_cost: 450,
+    original: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=800&auto=format&fit=crop&q=80',
+    enhanced: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=800&auto=format&fit=crop&q=80',
+    speech_en: 'This water jug is made from riverbed terracotta clay. Keeps drinking water naturally cool.',
+    speech_hi: 'यह पानी का जग शुद्ध मिट्टी से बना है। यह पानी को स्वाभाविक रूप से ठंडा रखता है।'
+  },
+  {
+    id: 'sample_saree',
+    name: 'Pochampally Handwoven Ikat Silk Saree',
+    category: 'Handloom / Textiles',
+    material: 'Mulberry Silk & Zari',
+    making_days: 8,
+    raw_cost: 3200,
+    labour_cost: 2800,
+    original: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&auto=format&fit=crop&q=80',
+    enhanced: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&auto=format&fit=crop&q=80',
+    speech_en: 'Pure silk handwoven saree using double ikat geometric techniques. Rich festive design.',
+    speech_hi: 'शुद्ध रेशम से हथकरघे पर बुनी गई पारंपरिक इकत साड़ी। उत्सवों के लिए उत्तम।'
+  },
+  {
+    id: 'sample_brass',
+    name: 'Dhokra Tribal Brass Musician Figurine',
+    category: 'Metalwork',
+    material: 'Bell Metal Brass Alloy',
+    making_days: 5,
+    raw_cost: 750,
+    labour_cost: 950,
+    original: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80',
+    enhanced: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80',
+    speech_en: 'Ancient lost-wax cast brass figurine of a tribal musician playing dholak.',
+    speech_hi: 'प्राचीन ढोकरा तकनीक से बनी पीतल की आदिवासी संगीतकार मूर्ति।'
+  }
+];
 
 export const INITIAL_PRODUCTS: Product[] = [
+  {
+    id: 'prod_bamboo_01',
+    seller_id: 'user_artisan_01',
+    name: 'Handcrafted Bamboo Storage Basket',
+    images: [
+      'https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1595079672139-62294316750c?w=800&auto=format&fit=crop&q=80'
+    ],
+    original_image: 'https://images.unsplash.com/photo-1595079672139-62294316750c?w=800&auto=format&fit=crop&q=80',
+    enhanced_image: 'https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=800&auto=format&fit=crop&q=80',
+    description: 'A premium handcrafted storage basket woven from seasoned natural bamboo. Ideal for eco-friendly living, multi-purpose clothes storage, and minimalist home decor. Meticulously made over 2 days of master weaving.',
+    description_hi: 'प्राकृतिक बांस से निर्मित हस्तनिर्मित स्टोरेज टोकरी। कपड़े और घरेलू सामान रखने तथा घर की सजावट के लिए आदर्श।',
+    description_regional: 'సహజ వెదురుతో చేతితో అల్లిన అందమైన నిల్వ బుట్ట. గృహాలంకరణ మరియు బట్టల నిల్వ కోసం అత్యుత్తమం.',
+    language: 'hi',
+    category: 'Home & Decor',
+    material: 'Natural Seasoned Bamboo Strips & Cane',
+    dimensions: '14" Diameter x 10" Height',
+    colour: 'Natural Golden Honey Bamboo',
+    production_method: '100% Traditional Handwoven',
+    making_time_days: 2,
+    quantity: 24,
+    raw_material_cost: 350,
+    labour_cost: 300,
+    suggested_price: 949,
+    selling_price: 949,
+    status: 'active',
+    artisan_name: 'Birsa Munda Bamboo Collective',
+    origin_region: 'Ranchi, Jharkhand',
+    badge: '100% Eco-Friendly & Handmade',
+    channels: {
+      app_store: true,
+      govt_marketplace: true,
+      b2b_marketplace: true,
+      ondc: true
+    },
+    created_at: new Date(Date.now() - 1 * 86400000).toISOString()
+  },
   {
     id: 'prod_001',
     seller_id: 'user_artisan_01',
@@ -43,6 +135,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     seller_id: 'user_artisan_01',
     name: 'Authentic Banarasi Handloom Katan Silk Saree',
     images: [
+
       'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800&auto=format&fit=crop&q=80'
     ],
@@ -356,6 +449,62 @@ export const INITIAL_BUYERS: BuyerRequirement[] = [
     delivery_timeline: 'Within 45 Days',
     details: 'Direct commission for luxury heritage suites. Need authentic 22K gold leaf Tanjore art and Mithila tree of life paintings.',
     posted_date: '5 days ago'
+  },
+  {
+    id: 'req_03',
+    business_name: 'FabDécor Living & Home Store',
+    buyer_type: 'Retailer',
+    location: 'Mumbai, Maharashtra',
+    verified: true,
+    title: '50 Handcrafted Bamboo Storage Baskets & Organizers',
+    category: 'Home & Decor',
+    quantity_needed: '50 units',
+    budget_per_unit: '₹850 - ₹1,000 / pc',
+    delivery_timeline: 'Within 20 Days',
+    details: 'Looking for sustainable handmade bamboo baskets for urban home decor. Need clean weave, sturdy handles, and uniform finish.',
+    posted_date: '1 day ago'
+  },
+  {
+    id: 'req_04',
+    business_name: 'Sanskriti Corporate Gifting Co.',
+    buyer_type: 'Corporate',
+    location: 'Gurugram, Delhi NCR',
+    verified: true,
+    title: '100 Eco-Friendly Handmade Gift Hampers / Boxes',
+    category: 'Home & Decor',
+    quantity_needed: '100 units',
+    budget_per_unit: '₹750 - ₹950 / pc',
+    delivery_timeline: 'Within 30 Days',
+    details: 'Annual corporate festive gifting requirement for Fortune 500 client. Eco-friendly sustainable handicrafts preferred.',
+    posted_date: '3 days ago'
+  },
+  {
+    id: 'req_05',
+    business_name: 'Serenity Eco-Luxury Resort Chain',
+    buyer_type: 'Hotel',
+    location: 'Wayanad, Kerala & Goa',
+    verified: true,
+    title: '200 Eco-Friendly Amenities & Room Storage Baskets',
+    category: 'Home & Decor',
+    quantity_needed: '200 units',
+    budget_per_unit: '₹650 - ₹850 / pc',
+    delivery_timeline: 'Within 60 Days',
+    details: 'Procuring natural craft amenities for 4 luxury eco-resorts across South India. Focus on plastic-free handcrafted items.',
+    posted_date: '4 days ago'
+  },
+  {
+    id: 'req_06',
+    business_name: 'Tribes India (TRIFED / GeM Emporium)',
+    buyer_type: 'Govt',
+    location: 'New Delhi, Delhi',
+    verified: true,
+    title: '80 Certified Traditional Rural Bamboo Crafts',
+    category: 'Home & Decor',
+    quantity_needed: '80 units',
+    budget_per_unit: '₹900 - ₹1,150 / pc',
+    delivery_timeline: 'Within 25 Days',
+    details: 'Direct government procurement for National Handicrafts Expo & Delhi Airport Lounge Emporium.',
+    posted_date: '6 hours ago'
   }
 ];
 
@@ -386,3 +535,126 @@ export const INITIAL_NOTIFICATIONS: NotificationItem[] = [
     audio_text: 'You have received a new order for Jaipur Blue Pottery Vase from Dr. Shivendra Jay.'
   }
 ];
+
+export const BAMBOO_B2B_MATCHES: B2BMatch[] = [
+  {
+    id: 'match_01',
+    buyer_id: 'req_03',
+    company_name: 'FabDécor Living & Home Store',
+    buyer_type: 'Retailer',
+    location: 'Mumbai, Maharashtra',
+    demand_title: 'Handcrafted Bamboo Storage Baskets & Organizers',
+    match_score: 92,
+    match_reasons: [
+      'Exact Category Match: Home & Decor → Storage',
+      'Min Order: 50 units (Fits your 25-day production batch)',
+      'Budget ₹850–₹1,000 matches AI recommended price ₹949'
+    ],
+    minimum_order_qty: 50,
+    target_price_per_unit: 950,
+    verified: true
+  },
+  {
+    id: 'match_02',
+    buyer_id: 'req_04',
+    company_name: 'Sanskriti Corporate Gifting Co.',
+    buyer_type: 'Corporate Gifting',
+    location: 'Gurugram, Delhi NCR',
+    demand_title: 'Eco-Friendly Handmade Gift Boxes & Baskets',
+    match_score: 74,
+    match_reasons: [
+      'High sustainability alignment (100% Biodegradable)',
+      'Min Order: 100 units (Bulk contract opportunity)',
+      'Budget ₹750–₹950 provides steady repeat wholesale volume'
+    ],
+    minimum_order_qty: 100,
+    target_price_per_unit: 850,
+    verified: true
+  },
+  {
+    id: 'match_03',
+    buyer_id: 'req_05',
+    company_name: 'Serenity Eco-Luxury Resort Chain',
+    buyer_type: 'Hotel',
+    location: 'Kerala & Goa',
+    demand_title: 'Eco-Friendly Amenities & Room Storage Baskets',
+    match_score: 61,
+    match_reasons: [
+      'Hospitality decor aesthetics match natural bamboo finish',
+      'High volume order: 200 units (requires wholesale volume concession)',
+      'Direct recurring supply contract for luxury eco-villas'
+    ],
+    minimum_order_qty: 200,
+    target_price_per_unit: 780,
+    verified: true
+  }
+];
+
+export const calculateDynamicPrice = (
+  rawMaterialCost: number,
+  labourDays: number,
+  category: string
+): PricingBreakdown => {
+  const safeRaw = rawMaterialCost || 350;
+  const safeDays = labourDays || 2;
+  const labourRatePerDay = 150; // Standard fair craft wage
+  const labourCost = safeDays * labourRatePerDay; // e.g. 300
+  const packagingCost = 50;
+  const logisticsCost = 100;
+  const baseCost = safeRaw + labourCost + packagingCost + logisticsCost; // e.g. 800
+
+  // Market reference range
+  const marketRefMin = Math.round(baseCost * 1.06 / 10) * 10; // e.g. 850
+  const marketRefMax = Math.round(baseCost * 1.38 / 10) * 10; // e.g. 1100
+
+  // Recommended price range
+  const recMin = Math.round(baseCost * 1.12 / 10) * 10 - 1; // e.g. 899
+  const recMax = Math.round(baseCost * 1.25 / 10) * 10 - 1; // e.g. 999
+  const suggestedPrice = Math.round((recMin + recMax) / 2);
+
+  const artisanProfit = suggestedPrice - (safeRaw + packagingCost + logisticsCost);
+
+  return {
+    raw_material_cost: safeRaw,
+    labour_days: safeDays,
+    labour_cost: labourCost,
+    packaging_cost: packagingCost,
+    logistics_cost: logisticsCost,
+    estimated_base_cost: baseCost,
+    market_reference_min: marketRefMin,
+    market_reference_max: marketRefMax,
+    recommended_min: recMin,
+    recommended_max: recMax,
+    suggested_price: suggestedPrice,
+    artisan_profit: artisanProfit,
+    explanation: `Based on your raw material (₹${safeRaw}), ${safeDays} days of dedicated artisan craftsmanship (₹${labourCost}), packaging & logistics, the estimated production base cost is ₹${baseCost}. Market reference benchmarks for handmade ${category} range between ₹${marketRefMin} and ₹${marketRefMax}.`
+  };
+};
+
+export const INITIAL_QUALITY_ALERTS: QualityCheckAlert[] = [
+  {
+    id: 'alert_clutter',
+    type: 'warning',
+    title: 'Domestic Cluttered Background Detected',
+    description: 'Wall, clothing, and household items detected behind product.',
+    detectedIssue: 'Clutter occupies 48% of frame background',
+    autoFixAvailable: true
+  },
+  {
+    id: 'alert_lighting',
+    type: 'warning',
+    title: 'Ambient Shadow / Under-Exposure',
+    description: 'Indoor ambient lighting creates unbalanced yellow shadows.',
+    detectedIssue: 'Color temperature ~3200K (Warm shadow cast)',
+    autoFixAvailable: true
+  },
+  {
+    id: 'alert_coverage',
+    type: 'warning',
+    title: 'Product Occupies ~38% of Image Frame',
+    description: 'E-commerce marketplace standards recommend 65-80% product coverage.',
+    detectedIssue: 'Framing padding is too wide',
+    autoFixAvailable: true
+  }
+];
+

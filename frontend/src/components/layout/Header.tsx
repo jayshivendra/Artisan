@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
 import { useVoice } from '../../context/VoiceContext.js';
@@ -13,7 +13,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGuideText }) => {
-  const { navigateTo, unreadNotifsCount, currentScreen, userRole, setUserRole } = useAppState();
+  const { navigateTo, unreadNotifsCount, currentScreen, userRole, setUserRole, setIsLiveDemoOpen } = useAppState();
   const { currentLanguageOption, supportedLanguages, setLanguage, language } = useLanguage();
   const { speak, isSpeaking, stopSpeaking, playChime } = useVoice();
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -55,10 +55,10 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGu
             </div>
             <div>
               <h1 className="font-extrabold text-stone-900 text-sm leading-none tracking-tight">
-                Kala<span className="text-artisan-terracotta font-black">Kriti</span>
+                Karigar<span className="text-artisan-terracotta font-black">Connect</span> AI
               </h1>
               <p className="text-[9px] text-stone-500 font-bold leading-tight">
-                {userRole === 'buyer' ? 'Craft Marketplace' : 'Artisan Studio'}
+                {userRole === 'buyer' ? 'Craft Marketplace' : 'AI Business Manager'}
               </p>
             </div>
           </button>
@@ -106,6 +106,19 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGu
             <span className="hidden sm:inline">Seller</span>
           </button>
         </div>
+
+        {/* SIH Live Demo Button */}
+        <button
+          onClick={() => {
+            playChime('success');
+            setIsLiveDemoOpen(true);
+          }}
+          className="px-2 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-black text-[10px] shadow-sm flex items-center space-x-1 active:scale-95 transition-transform"
+          title="Launch SIH 3-Minute Live Judge Demo"
+        >
+          <span>🏆</span>
+          <span className="hidden sm:inline">Demo</span>
+        </button>
 
         {/* Spoken Audio Helper Button */}
         <button

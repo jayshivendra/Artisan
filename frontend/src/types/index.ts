@@ -1,4 +1,4 @@
-﻿export type LanguageCode = 'en' | 'hi' | 'te' | 'ta' | 'bn' | 'mr' | 'gu' | 'kn' | 'ml' | 'pa';
+export type LanguageCode = 'en' | 'hi' | 'te' | 'ta' | 'bn' | 'mr' | 'gu' | 'kn' | 'ml' | 'pa';
 
 export interface LanguageOption {
   code: LanguageCode;
@@ -151,3 +151,51 @@ export interface NotificationItem {
   read: boolean;
   audio_text: string;
 }
+
+export interface QualityCheckAlert {
+  id: string;
+  type: 'warning' | 'error' | 'success';
+  title: string;
+  description: string;
+  detectedIssue?: string;
+  autoFixAvailable: boolean;
+}
+
+export interface PricingBreakdown {
+  raw_material_cost: number;
+  labour_days: number;
+  labour_cost: number;
+  packaging_cost: number;
+  logistics_cost: number;
+  estimated_base_cost: number;
+  market_reference_min: number;
+  market_reference_max: number;
+  recommended_min: number;
+  recommended_max: number;
+  suggested_price: number;
+  artisan_profit: number;
+  explanation: string;
+}
+
+export interface ProductReadinessItem {
+  key: string;
+  parameter: string;
+  status: 'complete' | 'warning' | 'missing';
+  weight: number;
+  tip?: string;
+}
+
+export interface B2BMatch {
+  id: string;
+  buyer_id: string;
+  company_name: string;
+  buyer_type: 'Retailer' | 'Wholesaler' | 'Hotel' | 'Interior Designer' | 'Corporate Gifting' | 'Govt (GeM)';
+  location: string;
+  demand_title: string;
+  match_score: number; // e.g., 92
+  match_reasons: string[];
+  minimum_order_qty: number;
+  target_price_per_unit: number;
+  verified: boolean;
+}
+
