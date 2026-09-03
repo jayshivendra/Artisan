@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
-import { useVoice } from '../../context/VoiceContext.js';
+import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
 import { Header } from '../../components/layout/Header.js';
 import { QuotationModal } from '../../components/modals/QuotationModal.js';
 import { BuyerRequirement } from '../../types/index.js';
@@ -21,7 +21,7 @@ import {
 
 export const FindBuyersScreen: React.FC = () => {
   const { buyers, navigateTo } = useAppState();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { playChime, speak } = useVoice();
 
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -58,7 +58,7 @@ export const FindBuyersScreen: React.FC = () => {
     <div className="flex flex-col min-h-full bg-stone-50 select-none pb-8">
       <Header
         title={t('b2b_title')}
-        audioGuideText="Here are bulk buyers and hotels looking for authentic artisan creations. Tap Send My Products to submit wholesale prices."
+        audioGuideText={AUDIO_GUIDANCE_BY_LANG.buyers?.[language] || "Here are bulk buyers and hotels looking for authentic artisan creations. Tap Send My Products to submit wholesale prices."}
       />
 
       <div className="p-4 space-y-3">

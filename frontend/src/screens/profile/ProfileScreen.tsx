@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
-import { useVoice } from '../../context/VoiceContext.js';
+import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
 import { Header } from '../../components/layout/Header.js';
 import { 
   User, 
@@ -34,7 +34,10 @@ export const ProfileScreen: React.FC = () => {
     playChime('tap');
     setLanguage(code);
     setIsLanguageModalOpen(false);
-    speak(`Language changed to ${code}`);
+
+    const targetOption = supportedLanguages.find(l => l.code === code) || currentLanguageOption;
+    const nativeGreeting = AUDIO_GUIDANCE_BY_LANG.home?.[code] || targetOption.scriptSample;
+    speak(nativeGreeting, targetOption.voiceLang, true);
   };
 
   return (

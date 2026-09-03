@@ -15,8 +15,8 @@ interface HeaderProps {
 import { AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
 
 export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGuideText }) => {
-  const { navigateTo, goBack, unreadNotifsCount, currentScreen, userRole, setUserRole, setIsLiveDemoOpen } = useAppState();
-  const { currentLanguageOption, supportedLanguages, setLanguage, language } = useLanguage();
+  const { navigateTo, goBack, unreadNotifsCount, currentScreen, userRole, setUserRole } = useAppState();
+  const { currentLanguageOption, supportedLanguages, setLanguage, language, t } = useLanguage();
   const { speak, isSpeaking, stopSpeaking, playChime, isVoiceEnabled, toggleVoice } = useVoice();
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [voiceToast, setVoiceToast] = useState<string | null>(null);
@@ -44,6 +44,14 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGu
     playChime('tap');
     setLanguage(code);
     setIsLangMenuOpen(false);
+
+    const targetOption = supportedLanguages.find(l => l.code === code) || currentLanguageOption;
+    const guidanceCategory = currentScreen === 'find_buyers' ? 'buyers' :
+                             currentScreen === 'add_product' ? 'step1' : 'home';
+    const nativeGuidance = AUDIO_GUIDANCE_BY_LANG[guidanceCategory]?.[code] ||
+                           AUDIO_GUIDANCE_BY_LANG.home?.[code] ||
+                           targetOption.scriptSample;
+    speak(nativeGuidance, targetOption.voiceLang, true);
   };
 
   return (
@@ -71,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGu
                 Karigar<span className="text-artisan-terracotta font-black">Connect</span> AI
               </h1>
               <p className="text-[9px] text-stone-500 font-bold leading-tight">
-                {userRole === 'buyer' ? 'Craft Marketplace' : 'AI Business Manager'}
+                {userRole === 'buyer' ? (t('market_title') || 'Marketplace') : (t('app_subtitle') || 'AI Business Manager')}
               </p>
             </div>
           </button>
@@ -100,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGu
             title="Switch to Buyer Marketplace"
           >
             <ShoppingBag className="w-3 h-3" />
-            <span className="hidden sm:inline">Buyer</span>
+            <span className="hidden sm:inline">{t('role_buyer') || 'Buyer'}</span>
           </button>
           
           <button
@@ -116,22 +124,9 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGu
             title="Switch to Artisan Seller Studio"
           >
             <Store className="w-3 h-3" />
-            <span className="hidden sm:inline">Seller</span>
+            <span className="hidden sm:inline">{t('role_seller') || 'Seller'}</span>
           </button>
         </div>
-
-        {/* SIH Live Demo Button */}
-        <button
-          onClick={() => {
-            playChime('success');
-            setIsLiveDemoOpen(true);
-          }}
-          className="px-2 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-black text-[10px] shadow-sm flex items-center space-x-1 active:scale-95 transition-transform"
-          title="Launch SIH 3-Minute Live Judge Demo"
-        >
-          <span>🏆</span>
-          <span className="hidden sm:inline">Demo</span>
-        </button>
 
         {/* Spoken Voice Instructor Enable / Disable Toggle Button */}
         <button
@@ -148,12 +143,12 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGu
           {isVoiceEnabled ? (
             <>
               <Volume2 className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span className="hidden sm:inline">Voice ON</span>
+              <span className="hidden sm:inline">{t('voice_on') || 'Voice ON'}</span>
             </>
           ) : (
             <>
               <VolumeX className="w-3.5 h-3.5 text-stone-500" />
-              <span className="hidden sm:inline">Voice OFF</span>
+              <span className="hidden sm:inline">{t('voice_off') || 'Voice OFF'}</span>
             </>
           )}
         </button>

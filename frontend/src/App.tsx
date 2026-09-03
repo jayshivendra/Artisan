@@ -4,7 +4,6 @@ import { MobileFrame } from './components/layout/MobileFrame.js';
 import { BottomNav } from './components/layout/BottomNav.js';
 import { VoiceAssistantFloatingBtn } from './components/layout/VoiceAssistantFloatingBtn.js';
 import { VoiceAssistantModal } from './components/modals/VoiceAssistantModal.js';
-import { LiveDemoModal } from './components/modals/LiveDemoModal.js';
 
 // Screens
 import { WelcomeScreen } from './screens/onboarding/WelcomeScreen.js';
@@ -87,12 +86,7 @@ export const App: React.FC = () => {
     <MobileFrame
       bottomNav={<BottomNav />}
       floatingAction={<VoiceAssistantFloatingBtn />}
-      modals={
-        <>
-          <VoiceAssistantModal />
-          <LiveDemoModal />
-        </>
-      }
+      modals={<VoiceAssistantModal />}
     >
       {renderActiveScreen()}
     </MobileFrame>

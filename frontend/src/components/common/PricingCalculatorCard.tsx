@@ -115,7 +115,7 @@ export const PricingCalculatorCard: React.FC<PricingCalculatorCardProps> = ({
         </div>
       </div>
 
-      {/* Defensible Hackathon Notice */}
+      {/* AI Transparency Notice */}
       <div className="bg-stone-50 rounded-xl p-2.5 border border-stone-200 flex items-start space-x-2">
         <Info className="w-3.5 h-3.5 text-stone-500 shrink-0 mt-0.5" />
         <p className="text-[10px] text-stone-600 leading-tight">

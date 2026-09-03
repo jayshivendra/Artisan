@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
-import { useVoice } from '../../context/VoiceContext.js';
+import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
 import { Header } from '../../components/layout/Header.js';
 import { StatusBadge } from '../../components/common/StatusBadge.js';
 import { Plus, Copy, Share2, Trash2, Edit3, Sparkles, Filter, Search } from 'lucide-react';
 
 export const ProductListScreen: React.FC = () => {
   const { products, setSelectedProductId, navigateTo, duplicateProduct, deleteProduct, resetProductDraft } = useAppState();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { playChime, speak } = useVoice();
 
   const [activeTab, setActiveTab] = useState<'all' | 'active' | 'low_stock' | 'draft'>('all');
@@ -61,7 +61,7 @@ export const ProductListScreen: React.FC = () => {
     <div className="flex flex-col min-h-full bg-stone-50 select-none pb-8">
       <Header
         title={t('nav_products')}
-        audioGuideText={`You have ${products.length} products listed. Tap on any card to edit price, stock or view details.`}
+        audioGuideText={AUDIO_GUIDANCE_BY_LANG.my_products?.[language] || `You have ${products.length} products listed. Tap on any card to edit price, stock or view details.`}
       />
 
       <div className="p-4 space-y-3">

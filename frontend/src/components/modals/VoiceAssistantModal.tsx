@@ -464,28 +464,8 @@ export const VoiceAssistantModal: React.FC = () => {
     }
 
     // =========================================================================
-    // 13. SIH JUDGE LIVE DEMO
+    // 13. LANGUAGE SWITCHING & VOICE CONFIRMATION
     // =========================================================================
-    if (
-      query.includes('demo') || 
-      query.includes('judge') || 
-      query.includes('sih') || 
-      query.includes('presentation') ||
-      query.includes('डेमो')
-    ) {
-      const textToSpeak = 'Launching the 8-Scene SIH Live Judge Demo Walkthrough!';
-      setAssistantText(textToSpeak);
-      setActionExecutedBadge('Launching SIH Judge Demo...');
-      playChime('success');
-      speak(textToSpeak, 'en-IN');
-
-      setTimeout(() => {
-        setIsProcessing(false);
-        setIsAssistantModalOpen(false);
-        setIsLiveDemoOpen(true);
-      }, 1200);
-      return;
-    }
 
     // =========================================================================
     // 14. CHANGE LANGUAGE COMMANDS
@@ -633,7 +613,7 @@ export const VoiceAssistantModal: React.FC = () => {
     { label: '💰 Check my sales & revenue', query: 'check my sales revenue', icon: TrendingUp },
     { label: '📦 Show my product catalog', query: 'show my products', icon: Package },
     { label: '🏷️ How does pricing AI work?', query: 'how does fair price work?', icon: Tag },
-    { label: '🏆 Launch SIH Judge Demo', query: 'start live demo', icon: Award },
+    { label: '🏛️ Government GeM & ONDC', query: 'export to gem and ondc', icon: Award },
     { 
       label: isVoiceEnabled ? '🔇 Turn Voice Guide Off' : '🔊 Turn Voice Guide On', 
       query: isVoiceEnabled ? 'disable voice' : 'enable voice', 

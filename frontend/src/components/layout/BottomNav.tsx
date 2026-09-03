@@ -40,7 +40,7 @@ export const BottomNav: React.FC = () => {
           <div className={`p-1 rounded-lg ${currentScreen === 'buyer_marketplace' ? 'bg-artisan-terracottaLight' : ''}`}>
             <Compass className={`w-5 h-5 ${currentScreen === 'buyer_marketplace' ? 'stroke-[2.5]' : 'stroke-2'}`} />
           </div>
-          <span className="text-[10px] mt-0.5 tracking-tight">Market</span>
+          <span className="text-[10px] mt-0.5 tracking-tight">{t('nav_market')}</span>
         </button>
 
         {/* 2. Wishlist */}
@@ -62,7 +62,7 @@ export const BottomNav: React.FC = () => {
               </span>
             )}
           </div>
-          <span className="text-[10px] mt-0.5 tracking-tight">Wishlist</span>
+          <span className="text-[10px] mt-0.5 tracking-tight">{t('nav_wishlist')}</span>
         </button>
 
         {/* 3. Central Cart Button */}
@@ -81,7 +81,7 @@ export const BottomNav: React.FC = () => {
               )}
             </div>
             <span className="text-[10px] font-bold text-artisan-terracotta mt-0.5 tracking-tight">
-              Cart
+              {t('nav_cart')}
             </span>
           </button>
         </div>
@@ -98,7 +98,7 @@ export const BottomNav: React.FC = () => {
           <div className={`p-1 rounded-lg ${currentScreen === 'buyer_orders' ? 'bg-artisan-terracottaLight' : ''}`}>
             <Package className={`w-5 h-5 ${currentScreen === 'buyer_orders' ? 'stroke-[2.5]' : 'stroke-2'}`} />
           </div>
-          <span className="text-[10px] mt-0.5 tracking-tight">My Orders</span>
+          <span className="text-[10px] mt-0.5 tracking-tight">{t('nav_orders')}</span>
         </button>
 
         {/* 5. Profile */}
@@ -185,7 +185,7 @@ export const BottomNav: React.FC = () => {
             17
           </span>
         </div>
-        <span className="text-[11px] mt-0.5 tracking-tight font-bold">Buyers</span>
+        <span className="text-[11px] mt-0.5 tracking-tight font-bold">{t('nav_buyers') || 'Buyers'}</span>
       </button>
 
       {/* 5. Orders */}

@@ -134,7 +134,7 @@ interface AppStateContextType {
   toggleWishlist: (productId: string) => void;
   createBuyerOrder: (items: CartItem[], address: string, paymentMethod: string) => Order;
 
-  // Hackathon Live Demo Walkthrough
+  // Interactive Demo State
   isLiveDemoOpen: boolean;
   setIsLiveDemoOpen: (val: boolean) => void;
 }

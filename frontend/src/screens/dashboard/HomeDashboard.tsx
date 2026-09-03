@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
-import { useVoice } from '../../context/VoiceContext.js';
+import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
 import { Header } from '../../components/layout/Header.js';
 import { 
   Camera, 
@@ -13,7 +13,6 @@ import {
   ArrowRight, 
   Users, 
   Eye, 
-  Play, 
   CheckCircle2, 
   Flame,
   Volume2
@@ -28,13 +27,12 @@ export const HomeDashboard: React.FC = () => {
     navigateTo, 
     resetProductDraft, 
     updateProductDraft,
-    setSelectedProductId,
-    setIsLiveDemoOpen
+    setSelectedProductId
   } = useAppState();
   const { t, language } = useLanguage();
   const { setIsAssistantModalOpen, playChime, speak } = useVoice();
 
-  // Metrics specified by the user
+  // Metrics
   const productsCount = 24;
   const viewsCount = 1284;
   const buyerLeadsCount = 17;
@@ -60,61 +58,33 @@ export const HomeDashboard: React.FC = () => {
     navigateTo('find_buyers');
   };
 
-  const handleOpenLiveDemo = () => {
-    playChime('success');
-    speak('Welcome to the KarigarConnect AI Live Demo. Demonstrating the complete 8-scene workflow for judges.');
-    setIsLiveDemoOpen(true);
-  };
-
   const getTimeGreeting = () => {
     const hours = new Date().getHours();
-    if (hours < 12) return 'Good Morning';
-    if (hours < 17) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hours < 12) return t('greeting_morning');
+    if (hours < 17) return t('greeting_afternoon');
+    return t('greeting_evening');
   };
+
+  // Localized audio guide spoken in the artisan's active language
+  const currentAudioGuide = AUDIO_GUIDANCE_BY_LANG.home?.[language] ||
+    `${getTimeGreeting()}, ${user.name || 'Artisan'}. ${t('app_subtitle')}.`;
 
   return (
     <div className="flex flex-col min-h-full bg-stone-50 select-none pb-6">
-      <Header
-        audioGuideText={`${getTimeGreeting()}, ${user.name || 'Artisan'}. Welcome to KarigarConnect AI. You have 24 active products, 17 buyer leads, and total revenue of ₹24,500. Tap Create using Voice or Photo to add new crafts.`}
-      />
+      <Header audioGuideText={currentAudioGuide} />
 
       <div className="p-4 space-y-4">
-        {/* SIH Hackathon Killer Demo Banner */}
-        <div className="rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-artisan-terracotta p-3.5 text-white shadow-lg flex items-center justify-between">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center font-black">
-              🏆
-            </div>
-            <div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-amber-100 block">
-                Hackathon Presentation Mode
-              </span>
-              <h4 className="text-sm font-black leading-tight">
-                3-Minute SIH Live Judge Demo
-              </h4>
-            </div>
-          </div>
-          <button
-            onClick={handleOpenLiveDemo}
-            className="py-2 px-3 bg-stone-950 hover:bg-stone-900 text-amber-300 rounded-xl text-xs font-black shadow flex items-center space-x-1 active:scale-95 transition-all"
-          >
-            <Play className="w-3.5 h-3.5 fill-amber-300" />
-            <span>Launch</span>
-          </button>
-        </div>
-
         {/* Friendly Greeting */}
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-xs font-extrabold text-artisan-terracotta uppercase tracking-wider">
+            <span className="text-xs font-black text-artisan-terracotta uppercase tracking-wider">
               KARIGARCONNECT AI
             </span>
             <h2 className="text-2xl font-black text-stone-900 tracking-tight flex items-center space-x-1.5">
-              <span>👋 Hello, {user.name?.split(' ')[0] || 'Artisan'}</span>
+              <span>👋 {t('hello')}, {user.name?.split(' ')[0] || 'Artisan'}</span>
             </h2>
             <p className="text-xs text-stone-500 font-medium mt-0.5">
-              Your AI Business Manager for Handmade Products
+              {t('app_subtitle')}
             </p>
           </div>
           <img
@@ -128,10 +98,10 @@ export const HomeDashboard: React.FC = () => {
         <div className="bg-white rounded-3xl border border-stone-200/90 p-4 shadow-sm space-y-3">
           <div className="flex items-center justify-between border-b border-stone-100 pb-2">
             <span className="text-xs font-black uppercase tracking-wider text-stone-700">
-              Business Overview
+              {t('business_overview')}
             </span>
             <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
-              🟢 Active Store
+              🟢 {t('active_store')}
             </span>
           </div>
 
@@ -139,10 +109,10 @@ export const HomeDashboard: React.FC = () => {
             {/* Products */}
             <div
               onClick={() => navigateTo('my_products')}
-              className="p-3 rounded-2xl bg-stone-50 border border-stone-100 cursor-pointer active:scale-95 transition-all"
+              className="p-3 rounded-2xl bg-stone-50 border border-stone-100 cursor-pointer active:scale-95 transition-all hover:border-artisan-terracotta/40"
             >
               <div className="flex items-center justify-between text-stone-500 text-xs font-bold">
-                <span>Products</span>
+                <span>{t('stat_products')}</span>
                 <Package className="w-3.5 h-3.5 text-artisan-terracotta" />
               </div>
               <p className="text-2xl font-black text-stone-900 mt-1">{productsCount}</p>
@@ -151,7 +121,7 @@ export const HomeDashboard: React.FC = () => {
             {/* Views */}
             <div className="p-3 rounded-2xl bg-stone-50 border border-stone-100">
               <div className="flex items-center justify-between text-stone-500 text-xs font-bold">
-                <span>Views</span>
+                <span>{t('stat_views')}</span>
                 <Eye className="w-3.5 h-3.5 text-blue-600" />
               </div>
               <p className="text-2xl font-black text-stone-900 mt-1">{viewsCount.toLocaleString()}</p>
@@ -160,10 +130,10 @@ export const HomeDashboard: React.FC = () => {
             {/* Buyer Leads */}
             <div
               onClick={() => navigateTo('find_buyers')}
-              className="p-3 rounded-2xl bg-stone-50 border border-stone-100 cursor-pointer active:scale-95 transition-all"
+              className="p-3 rounded-2xl bg-stone-50 border border-stone-100 cursor-pointer active:scale-95 transition-all hover:border-indigo-300"
             >
               <div className="flex items-center justify-between text-stone-500 text-xs font-bold">
-                <span>Buyer Leads</span>
+                <span>{t('stat_buyer_leads')}</span>
                 <Users className="w-3.5 h-3.5 text-indigo-600" />
               </div>
               <p className="text-2xl font-black text-indigo-700 mt-1">{buyerLeadsCount}</p>
@@ -172,10 +142,10 @@ export const HomeDashboard: React.FC = () => {
             {/* Orders */}
             <div
               onClick={() => navigateTo('orders')}
-              className="p-3 rounded-2xl bg-stone-50 border border-stone-100 cursor-pointer active:scale-95 transition-all"
+              className="p-3 rounded-2xl bg-stone-50 border border-stone-100 cursor-pointer active:scale-95 transition-all hover:border-amber-300"
             >
               <div className="flex items-center justify-between text-stone-500 text-xs font-bold">
-                <span>Orders</span>
+                <span>{t('stat_orders')}</span>
                 <ShoppingBag className="w-3.5 h-3.5 text-amber-600" />
               </div>
               <p className="text-2xl font-black text-stone-900 mt-1">{ordersCount}</p>
@@ -190,7 +160,7 @@ export const HomeDashboard: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] font-extrabold text-stone-400 uppercase tracking-wider block">
-                  Total Revenue
+                  {t('stat_total_revenue')}
                 </span>
                 <p className="text-xl font-black text-white">
                   ₹{totalRevenue.toLocaleString()}
@@ -198,15 +168,15 @@ export const HomeDashboard: React.FC = () => {
               </div>
             </div>
             <span className="text-xs font-black text-emerald-400">
-              ↑ 32% this month
+              {t('stat_growth')}
             </span>
           </div>
         </div>
 
-        {/* The 3 Core 1-Tap Action Cards from Specification */}
+        {/* The 3 Core 1-Tap Action Cards */}
         <div className="space-y-2.5">
           <span className="text-xs font-black uppercase tracking-wider text-stone-700 block">
-            Core Actions
+            {t('core_actions')}
           </span>
 
           {/* 1. Create using Photo */}
@@ -219,9 +189,9 @@ export const HomeDashboard: React.FC = () => {
                 <Camera className="w-6 h-6 stroke-[2.5]" />
               </div>
               <div>
-                <h4 className="text-base font-black leading-tight">📸 Create using Photo</h4>
+                <h4 className="text-base font-black leading-tight">{t('action_create_photo_title')}</h4>
                 <p className="text-xs text-orange-100 font-medium">
-                  Snap ONE photo → AI cleans background & enhances
+                  {t('action_create_photo_sub')}
                 </p>
               </div>
             </div>
@@ -238,9 +208,9 @@ export const HomeDashboard: React.FC = () => {
                 <Mic className="w-6 h-6 stroke-[2.5] animate-pulse" />
               </div>
               <div>
-                <h4 className="text-base font-black leading-tight">🎤 Create using Voice</h4>
+                <h4 className="text-base font-black leading-tight">{t('action_create_voice_title')}</h4>
                 <p className="text-xs text-stone-300 font-medium">
-                  Speak in Hindi or regional tongue → AI writes catalog
+                  {t('action_create_voice_sub')}
                 </p>
               </div>
             </div>
@@ -257,9 +227,9 @@ export const HomeDashboard: React.FC = () => {
                 <Users className="w-6 h-6 stroke-[2.5]" />
               </div>
               <div>
-                <h4 className="text-base font-black leading-tight">🤝 Find Buyers (Direct B2B)</h4>
+                <h4 className="text-base font-black leading-tight">{t('action_find_buyers_title')}</h4>
                 <p className="text-xs text-stone-500 font-medium">
-                  17 verified bulk orders & wholesale demands live
+                  {t('action_find_buyers_sub')}
                 </p>
               </div>
             </div>
@@ -272,14 +242,14 @@ export const HomeDashboard: React.FC = () => {
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
             <span className="text-xs font-bold text-emerald-900">
-              New Wholesale Demand: <strong>50 Bamboo Baskets</strong> in Mumbai
+              {t('demand_ticker_text')}
             </span>
           </div>
           <button
             onClick={handleFindBuyers}
             className="text-[11px] font-black text-emerald-800 underline hover:text-emerald-950"
           >
-            Quote Now
+            {t('btn_quote_now')}
           </button>
         </div>
       </div>
