@@ -4,9 +4,17 @@ import { Smartphone, Monitor, Wifi, Battery, Signal } from 'lucide-react';
 
 interface MobileFrameProps {
   children: React.ReactNode;
+  bottomNav?: React.ReactNode;
+  floatingAction?: React.ReactNode;
+  modals?: React.ReactNode;
 }
 
-export const MobileFrame: React.FC<MobileFrameProps> = ({ children }) => {
+export const MobileFrame: React.FC<MobileFrameProps> = ({
+  children,
+  bottomNav,
+  floatingAction,
+  modals
+}) => {
   const { isMobileDeviceView, setIsMobileDeviceView } = useAppState();
 
   return (
@@ -51,9 +59,9 @@ export const MobileFrame: React.FC<MobileFrameProps> = ({ children }) => {
             : 'h-full sm:h-[860px] max-w-4xl sm:rounded-2xl border border-stone-200'
         }`}
       >
-        {/* Desktop Virtual Status Bar (hidden on real mobile) */}
+        {/* Desktop Virtual Status Bar */}
         {isMobileDeviceView && (
-          <aside aria-label="Device Status Bar" className="hidden sm:flex items-center justify-between px-7 pt-2.5 pb-1 text-stone-800 text-[11px] font-bold tracking-tight z-50 bg-inherit select-none">
+          <aside aria-label="Device Status Bar" className="hidden sm:flex items-center justify-between px-7 pt-2.5 pb-1 text-stone-800 text-[11px] font-bold tracking-tight z-50 bg-inherit select-none shrink-0">
             <span>9:41</span>
             {/* Speaker Pill */}
             <div className="w-20 h-3.5 bg-stone-800 rounded-full mx-auto -mt-0.5 shadow-inner"></div>
@@ -65,10 +73,19 @@ export const MobileFrame: React.FC<MobileFrameProps> = ({ children }) => {
           </aside>
         )}
 
-        {/* Screen Content Area - Perfectly scrollable with bottom padding for BottomNav */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col relative pb-20 scroll-smooth">
+        {/* Screen Content Area - ONLY screen content scrolls, ending cleanly above BottomNav */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col relative scroll-smooth">
           {children}
         </div>
+
+        {/* Floating Action Button (Mic) */}
+        {floatingAction}
+
+        {/* Bottom Navigation Dock - Sits cleanly at the bottom, never stuck or floating over scroll content! */}
+        {bottomNav}
+
+        {/* Global Modals */}
+        {modals}
 
         {/* Desktop Home Bar indicator */}
         {isMobileDeviceView && (

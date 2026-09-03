@@ -84,12 +84,17 @@ export const App: React.FC = () => {
   };
 
   return (
-    <MobileFrame>
+    <MobileFrame
+      bottomNav={<BottomNav />}
+      floatingAction={<VoiceAssistantFloatingBtn />}
+      modals={
+        <>
+          <VoiceAssistantModal />
+          <LiveDemoModal />
+        </>
+      }
+    >
       {renderActiveScreen()}
-      <BottomNav />
-      <VoiceAssistantFloatingBtn />
-      <VoiceAssistantModal />
-      <LiveDemoModal />
     </MobileFrame>
   );
 };

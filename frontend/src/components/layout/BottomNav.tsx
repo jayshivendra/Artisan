@@ -9,8 +9,8 @@ export const BottomNav: React.FC = () => {
   const { t } = useLanguage();
   const { playChime } = useVoice();
 
-  // Onboarding screens do not display bottom nav
-  const isExcluded = ['welcome', 'language_select', 'category_select', 'profile_setup'].includes(currentScreen);
+  // Screens that do not display bottom nav (onboarding & product creation wizard)
+  const isExcluded = ['welcome', 'language_select', 'category_select', 'profile_setup', 'add_product'].includes(currentScreen);
   if (isExcluded) return null;
 
   const pendingOrdersCount = orders.filter(o => o.status === 'new').length;
@@ -27,7 +27,7 @@ export const BottomNav: React.FC = () => {
   // BUYER MODE NAVIGATION
   if (userRole === 'buyer') {
     return (
-      <nav aria-label="Buyer Navigation" className="fixed sm:absolute bottom-0 left-0 right-0 max-w-full sm:max-w-[404px] mx-auto bg-white/95 backdrop-blur-md border-t border-stone-200/80 shadow-nav z-40 px-2 py-1.5 flex items-center justify-around select-none pb-[max(0.375rem,env(safe-area-inset-bottom))]">
+      <nav aria-label="Buyer Navigation" className="w-full bg-white/95 backdrop-blur-md border-t border-stone-200/80 shadow-nav z-30 px-2 py-1.5 flex items-center justify-around select-none shrink-0 pb-[max(0.375rem,env(safe-area-inset-bottom))]">
         {/* 1. Explore Marketplace */}
         <button
           onClick={() => handleNav('buyer_marketplace')}
@@ -121,7 +121,7 @@ export const BottomNav: React.FC = () => {
 
   // SELLER / ARTISAN MODE NAVIGATION
   return (
-    <nav aria-label="Main Navigation" className="fixed sm:absolute bottom-0 left-0 right-0 max-w-full sm:max-w-[404px] mx-auto bg-white/95 backdrop-blur-md border-t border-stone-200/80 shadow-nav z-40 px-2 py-1.5 flex items-center justify-around select-none pb-[max(0.375rem,env(safe-area-inset-bottom))]">
+    <nav aria-label="Main Navigation" className="w-full bg-white/95 backdrop-blur-md border-t border-stone-200/80 shadow-nav z-30 px-2 py-1.5 flex items-center justify-around select-none shrink-0 pb-[max(0.375rem,env(safe-area-inset-bottom))]">
       {/* 1. Home */}
       <button
         onClick={() => handleNav('home')}
