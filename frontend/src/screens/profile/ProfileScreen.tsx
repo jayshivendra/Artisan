@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
 import { useVoice } from '../../context/VoiceContext.js';
@@ -15,6 +15,7 @@ import {
   Sparkles, 
   ShieldCheck, 
   Volume2,
+  VolumeX,
   WifiOff,
   Check,
   Edit3,
@@ -25,7 +26,7 @@ import { LanguageCode } from '../../types/index.js';
 export const ProfileScreen: React.FC = () => {
   const { user, navigateTo, isMobileDeviceView, setIsMobileDeviceView } = useAppState();
   const { currentLanguageOption, supportedLanguages, setLanguage, language, t } = useLanguage();
-  const { playChime, speak } = useVoice();
+  const { playChime, speak, isVoiceEnabled, toggleVoice } = useVoice();
 
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState<boolean>(false);
 
@@ -191,7 +192,7 @@ export const ProfileScreen: React.FC = () => {
               playChime('tap');
               navigateTo('help_tutorials');
             }}
-            className="w-full p-4 flex items-center justify-between hover:bg-stone-50 transition-colors text-left"
+            className="w-full p-4 flex items-center justify-between hover:bg-stone-50 transition-colors text-left border-b border-stone-100"
           >
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center font-bold">
@@ -204,6 +205,39 @@ export const ProfileScreen: React.FC = () => {
             </div>
             <ChevronRight className="w-4 h-4 text-stone-700" />
           </button>
+
+          {/* Voice Instructor & Spoken Guidance Enable / Disable Switch */}
+          <div className="w-full p-4 flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold ${
+                isVoiceEnabled ? 'bg-amber-100 text-amber-800' : 'bg-stone-100 text-stone-500'
+              }`}>
+                {isVoiceEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+              </div>
+              <div>
+                <h4 className="font-extrabold text-stone-900 text-xs">Voice Instructor & Spoken Audio</h4>
+                <span className="text-[11px] text-stone-600 font-medium block">
+                  {isVoiceEnabled ? '🔊 Spoken Guidance is Active' : '🔇 Muted / Silent Mode (Disabled)'}
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                playChime('tap');
+                toggleVoice();
+              }}
+              className={`w-12 h-6 flex items-center rounded-full p-0.5 transition-colors duration-200 ease-in-out ${
+                isVoiceEnabled ? 'bg-emerald-600' : 'bg-stone-300'
+              }`}
+              title={isVoiceEnabled ? 'Disable Voice Instructor' : 'Enable Voice Instructor'}
+            >
+              <div
+                className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                  isVoiceEnabled ? 'translate-x-6' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Offline-friendly Status Notice */}

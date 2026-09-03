@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useVoice } from '../../context/VoiceContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
 import { useAppState } from '../../context/AppStateContext.js';
-import { Mic, X, Sparkles, ArrowRight, Volume2, CheckCircle2, ShoppingCart, ShoppingBag, Camera, Users, TrendingUp, Package, Tag, Award, Heart, Truck, Store } from 'lucide-react';
+import { Mic, X, Sparkles, ArrowRight, Volume2, VolumeX, CheckCircle2, ShoppingCart, ShoppingBag, Camera, Users, TrendingUp, Package, Tag, Award, Heart, Truck, Store } from 'lucide-react';
 import { LanguageCode } from '../../types/index.js';
 
 export const VoiceAssistantModal: React.FC = () => {
@@ -14,7 +14,10 @@ export const VoiceAssistantModal: React.FC = () => {
     stopListening,
     transcript,
     speak,
-    playChime
+    playChime,
+    isVoiceEnabled,
+    setIsVoiceEnabled,
+    toggleVoice
   } = useVoice();
   const { language, setLanguage, currentLanguageOption } = useLanguage();
   const { 
@@ -550,7 +553,48 @@ export const VoiceAssistantModal: React.FC = () => {
     }
 
     // =========================================================================
-    // 16. GENERAL CONVERSATIONAL AI INTELLIGENCE
+    // 16. VOICE INSTRUCTOR ENABLE / DISABLE
+    // =========================================================================
+    if (
+      query.includes('disable voice') || 
+      query.includes('turn off voice') || 
+      query.includes('mute voice') || 
+      query.includes('stop voice') || 
+      query.includes('silent') ||
+      query.includes('आवाज़ बंद') || 
+      query.includes('वॉयस बंद') ||
+      query.includes('వాయిస్ ఆపు') ||
+      query.includes('వాయిస్ ఆఫ్')
+    ) {
+      setIsVoiceEnabled(false);
+      const textToSpeak = 'Voice instructor and audio guidance have been disabled (Silent Mode).';
+      setAssistantText(textToSpeak);
+      setActionExecutedBadge('Voice Guide Disabled 🔇');
+      setIsProcessing(false);
+      return;
+    }
+
+    if (
+      query.includes('enable voice') || 
+      query.includes('turn on voice') || 
+      query.includes('start voice') || 
+      query.includes('unmute') ||
+      query.includes('आवाज़ चालू') || 
+      query.includes('वॉयस चालू') ||
+      query.includes('వాయిస్ ఆన్')
+    ) {
+      setIsVoiceEnabled(true);
+      const textToSpeak = 'Voice instructor and audio guidance are now enabled!';
+      setAssistantText(textToSpeak);
+      setActionExecutedBadge('Voice Guide Enabled 🔊');
+      playChime('success');
+      speak(textToSpeak, currentLanguageOption.voiceLang, true);
+      setIsProcessing(false);
+      return;
+    }
+
+    // =========================================================================
+    // 17. GENERAL CONVERSATIONAL AI INTELLIGENCE
     // =========================================================================
     const fallbackResp: Record<string, string> = {
       te: 'నేను మీ కార్ట్ చూపించగలను, వస్తువులు కొనడానికి మార్కెట్‌ప్లేస్ తెరవగలను, లేదా ఫోటో తీసి అమ్మడానికి సహాయం చేయగలను. మీరు ఏమి చేయాలనుకుంటున్నారు?',
@@ -576,6 +620,11 @@ export const VoiceAssistantModal: React.FC = () => {
     { label: '🛍️ Want to buy a product', query: 'want to buy a product', icon: ShoppingBag },
     { label: '❤️ View saved wishlist', query: 'view my wishlist', icon: Heart },
     { label: '📦 Track my purchases', query: 'track my purchases', icon: Truck },
+    { 
+      label: isVoiceEnabled ? '🔇 Turn Voice Guide Off' : '🔊 Turn Voice Guide On', 
+      query: isVoiceEnabled ? 'disable voice' : 'enable voice', 
+      icon: isVoiceEnabled ? VolumeX : Volume2 
+    },
   ];
 
   const artisanCommands = [
@@ -585,6 +634,11 @@ export const VoiceAssistantModal: React.FC = () => {
     { label: '📦 Show my product catalog', query: 'show my products', icon: Package },
     { label: '🏷️ How does pricing AI work?', query: 'how does fair price work?', icon: Tag },
     { label: '🏆 Launch SIH Judge Demo', query: 'start live demo', icon: Award },
+    { 
+      label: isVoiceEnabled ? '🔇 Turn Voice Guide Off' : '🔊 Turn Voice Guide On', 
+      query: isVoiceEnabled ? 'disable voice' : 'enable voice', 
+      icon: isVoiceEnabled ? VolumeX : Volume2 
+    },
   ];
 
   return (
@@ -606,12 +660,40 @@ export const VoiceAssistantModal: React.FC = () => {
             </div>
           </div>
 
-          <button
-            onClick={() => setIsAssistantModalOpen(false)}
-            className="p-2 rounded-full hover:bg-stone-100 text-stone-500 hover:text-stone-800 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center space-x-2">
+            {/* Direct Voice Instructor Enable / Disable Toggle in Modal */}
+            <button
+              onClick={() => {
+                playChime('tap');
+                toggleVoice();
+              }}
+              className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-black transition-all active:scale-95 shadow-sm ${
+                isVoiceEnabled
+                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                  : 'bg-stone-100 text-stone-600 border border-stone-300'
+              }`}
+              title={isVoiceEnabled ? 'Voice Instructor: ON (Tap to Disable / Mute)' : 'Voice Instructor: OFF (Tap to Enable Voice)'}
+            >
+              {isVoiceEnabled ? (
+                <>
+                  <Volume2 className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Voice ON</span>
+                </>
+              ) : (
+                <>
+                  <VolumeX className="w-3.5 h-3.5 text-stone-500" />
+                  <span>Voice OFF</span>
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={() => setIsAssistantModalOpen(false)}
+              className="p-2 rounded-full hover:bg-stone-100 text-stone-500 hover:text-stone-800 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Action badge if triggered */}

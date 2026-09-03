@@ -17,19 +17,26 @@ import { AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
 export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGuideText }) => {
   const { navigateTo, goBack, unreadNotifsCount, currentScreen, userRole, setUserRole, setIsLiveDemoOpen } = useAppState();
   const { currentLanguageOption, supportedLanguages, setLanguage, language } = useLanguage();
-  const { speak, isSpeaking, stopSpeaking, playChime } = useVoice();
+  const { speak, isSpeaking, stopSpeaking, playChime, isVoiceEnabled, toggleVoice } = useVoice();
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+  const [voiceToast, setVoiceToast] = useState<string | null>(null);
 
-  const handleAudioHelp = () => {
-    if (isSpeaking) {
-      stopSpeaking();
+  const handleToggleVoiceInstructor = () => {
+    playChime('tap');
+    if (isVoiceEnabled) {
+      toggleVoice();
+      setVoiceToast('🔇 Voice Guide: OFF');
+      setTimeout(() => setVoiceToast(null), 2000);
     } else {
+      toggleVoice();
+      setVoiceToast('🔊 Voice Guide: ON');
+      setTimeout(() => setVoiceToast(null), 2000);
       const guidanceCategory = currentScreen === 'find_buyers' ? 'buyers' :
                                currentScreen === 'add_product' ? 'step1' : 'home';
       const nativeGuidance = AUDIO_GUIDANCE_BY_LANG[guidanceCategory]?.[language] ||
                              audioGuideText ||
-                             `Welcome to KarigarConnect AI. You are on the ${currentScreen} screen.`;
-      speak(nativeGuidance, currentLanguageOption.voiceLang);
+                             `Voice guide is active.`;
+      speak(nativeGuidance, currentLanguageOption.voiceLang, true);
     }
   };
 
@@ -126,22 +133,37 @@ export const Header: React.FC<HeaderProps> = ({ title, showBack, onBack, audioGu
           <span className="hidden sm:inline">Demo</span>
         </button>
 
-        {/* Spoken Audio Helper Button */}
+        {/* Spoken Voice Instructor Enable / Disable Toggle Button */}
         <button
-          onClick={handleAudioHelp}
-          className={`p-1.5 rounded-full transition-all active:scale-95 flex items-center justify-center ${
-            isSpeaking
+          onClick={handleToggleVoiceInstructor}
+          className={`py-1 px-2 rounded-full transition-all active:scale-95 flex items-center space-x-1 font-black text-[10px] shadow-sm ${
+            !isVoiceEnabled
+              ? 'bg-stone-200 text-stone-500 hover:bg-stone-300'
+              : isSpeaking
               ? 'bg-artisan-marigold text-white animate-pulse shadow-md'
-              : 'bg-amber-100/70 text-amber-800 hover:bg-amber-200'
+              : 'bg-amber-100/90 text-amber-900 hover:bg-amber-200 border border-amber-300/70'
           }`}
-          title="Listen to Spoken Instructions"
+          title={isVoiceEnabled ? 'Voice Instructor: ON (Tap to Disable / Mute)' : 'Voice Instructor: OFF (Tap to Enable Voice)'}
         >
-          {isSpeaking ? (
-            <VolumeX className="w-3.5 h-3.5" />
+          {isVoiceEnabled ? (
+            <>
+              <Volume2 className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span className="hidden sm:inline">Voice ON</span>
+            </>
           ) : (
-            <Volume2 className="w-3.5 h-3.5 stroke-[2.5]" />
+            <>
+              <VolumeX className="w-3.5 h-3.5 text-stone-500" />
+              <span className="hidden sm:inline">Voice OFF</span>
+            </>
           )}
         </button>
+
+        {/* Quick Voice Notification Toast */}
+        {voiceToast && (
+          <div className="absolute top-12 right-10 z-50 px-3 py-1 rounded-full bg-stone-900 text-white text-[11px] font-black shadow-xl animate-in fade-in zoom-in-95">
+            {voiceToast}
+          </div>
+        )}
 
         {/* Quick Language Switcher Dropdown */}
         <div className="relative">

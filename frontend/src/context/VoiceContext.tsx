@@ -6,10 +6,13 @@ interface VoiceContextType {
   isListening: boolean;
   transcript: string;
   isSpeaking: boolean;
+  isVoiceEnabled: boolean;
+  setIsVoiceEnabled: (enabled: boolean) => void;
+  toggleVoice: () => void;
   startListening: (onResult?: (text: string) => void) => void;
   stopListening: () => void;
-  speak: (text: string, langCode?: string) => void;
-  speakLocalizedKey: (translationKey: string, fallbackText?: string) => void;
+  speak: (text: string, langCode?: string, force?: boolean) => void;
+  speakLocalizedKey: (translationKey: string, fallbackText?: string, force?: boolean) => void;
   stopSpeaking: () => void;
   playChime: (type?: 'success' | 'tap' | 'alert') => void;
   isAssistantModalOpen: boolean;
@@ -192,6 +195,14 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
+  const [isVoiceEnabled, setIsVoiceEnabledState] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('karigar_voice_enabled');
+      return saved !== null ? saved === 'true' : true;
+    }
+    return true;
+  });
+
   const stopSpeaking = useCallback(() => {
     if (currentAudioRef.current) {
       currentAudioRef.current.pause();
@@ -202,6 +213,29 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
     setIsSpeaking(false);
   }, []);
+
+  const setIsVoiceEnabled = useCallback((enabled: boolean) => {
+    setIsVoiceEnabledState(enabled);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('karigar_voice_enabled', enabled ? 'true' : 'false');
+    }
+    if (!enabled) {
+      stopSpeaking();
+    }
+  }, [stopSpeaking]);
+
+  const toggleVoice = useCallback(() => {
+    setIsVoiceEnabledState(prev => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('karigar_voice_enabled', next ? 'true' : 'false');
+      }
+      if (!next) {
+        stopSpeaking();
+      }
+      return next;
+    });
+  }, [stopSpeaking]);
 
   const speakWithBrowserSynthesis = useCallback((text: string, targetLang: string) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
@@ -230,8 +264,9 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [findBestVoice]);
 
   // Robust Text-To-Speech with full mobile compatibility across all Indian languages
-  const speak = useCallback((text: string, langCode?: string) => {
+  const speak = useCallback((text: string, langCode?: string, force: boolean = false) => {
     if (!text) return;
+    if (!isVoiceEnabled && !force) return; // Audio guidance / Voice instructor is muted!
 
     stopSpeaking();
     setIsSpeaking(true);
@@ -266,13 +301,13 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } catch (e) {
       speakWithBrowserSynthesis(text, targetLang);
     }
-  }, [currentLanguageOption, stopSpeaking, speakWithBrowserSynthesis]);
+  }, [currentLanguageOption, isVoiceEnabled, stopSpeaking, speakWithBrowserSynthesis]);
 
   // Localized key announcement helper
-  const speakLocalizedKey = useCallback((translationKey: string, fallbackText?: string) => {
+  const speakLocalizedKey = useCallback((translationKey: string, fallbackText?: string, force?: boolean) => {
     const translation = TRANSLATIONS[language]?.[translationKey] || fallbackText || '';
     if (translation) {
-      speak(translation, currentLanguageOption.voiceLang);
+      speak(translation, currentLanguageOption.voiceLang, force);
     }
   }, [language, currentLanguageOption, speak]);
 
@@ -363,6 +398,9 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         isListening,
         transcript,
         isSpeaking,
+        isVoiceEnabled,
+        setIsVoiceEnabled,
+        toggleVoice,
         startListening,
         stopListening,
         speak,
