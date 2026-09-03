@@ -16,7 +16,7 @@ export const VoiceAssistantFloatingBtn: React.FC = () => {
   };
 
   return (
-    <div className="absolute bottom-20 right-4 z-40">
+    <div className="fixed sm:absolute bottom-20 right-4 sm:right-6 z-40">
       <button
         onClick={handleClick}
         className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-tr from-artisan-indigo via-blue-700 to-indigo-500 text-white shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95"

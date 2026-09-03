@@ -190,55 +190,91 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return availableVoices[0] || null;
   }, [availableVoices]);
 
-  // Robust Text-To-Speech with full mobile compatibility
-  const speak = useCallback((text: string, langCode?: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window) || !text) return;
+  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
+  const stopSpeaking = useCallback(() => {
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current = null;
+    }
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setIsSpeaking(false);
+  }, []);
+
+  const speakWithBrowserSynthesis = useCallback((text: string, targetLang: string) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      setIsSpeaking(false);
+      return;
+    }
     try {
       window.speechSynthesis.cancel();
-
-      const targetLang = langCode || currentLanguageOption.voiceLang || 'hi-IN';
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = targetLang;
-      utterance.rate = 0.92; // Clear pacing for artisans
+      utterance.rate = 0.95;
       utterance.pitch = 1.05;
 
       const voice = findBestVoice(targetLang);
-      if (voice) {
-        utterance.voice = voice;
-      }
+      if (voice) utterance.voice = voice;
 
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = (e) => {
-        console.warn('SpeechSynthesis error:', e);
-        setIsSpeaking(false);
-      };
+      utterance.onerror = () => setIsSpeaking(false);
 
-      // Workaround for mobile browsers where speech engine can get stuck
       window.speechSynthesis.resume();
       window.speechSynthesis.speak(utterance);
     } catch (e) {
-      console.warn('Speech synthesis exception:', e);
       setIsSpeaking(false);
     }
-  }, [currentLanguageOption, findBestVoice]);
+  }, [findBestVoice]);
+
+  // Robust Text-To-Speech with full mobile compatibility across all Indian languages
+  const speak = useCallback((text: string, langCode?: string) => {
+    if (!text) return;
+
+    stopSpeaking();
+    setIsSpeaking(true);
+
+    const targetLang = langCode || currentLanguageOption.voiceLang || 'hi-IN';
+    const shortLang = targetLang.split('-')[0]; // 'te', 'ta', 'kn', 'bn', 'hi', 'en', etc.
+
+    // 1. Stream high-fidelity native audio (guarantees Telugu, Tamil, Kannada, Bengali, etc. are heard)
+    try {
+      const cleanText = text.replace(/[\n\r]/g, ' ').trim().slice(0, 200);
+      const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${shortLang}&q=${encodeURIComponent(cleanText)}`;
+      const audio = new Audio(audioUrl);
+      currentAudioRef.current = audio;
+
+      audio.onended = () => {
+        setIsSpeaking(false);
+        currentAudioRef.current = null;
+      };
+
+      audio.onerror = () => {
+        currentAudioRef.current = null;
+        speakWithBrowserSynthesis(text, targetLang);
+      };
+
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          currentAudioRef.current = null;
+          speakWithBrowserSynthesis(text, targetLang);
+        });
+      }
+    } catch (e) {
+      speakWithBrowserSynthesis(text, targetLang);
+    }
+  }, [currentLanguageOption, stopSpeaking, speakWithBrowserSynthesis]);
 
   // Localized key announcement helper
   const speakLocalizedKey = useCallback((translationKey: string, fallbackText?: string) => {
-    const langKey = language as string;
     const translation = TRANSLATIONS[language]?.[translationKey] || fallbackText || '';
     if (translation) {
       speak(translation, currentLanguageOption.voiceLang);
     }
   }, [language, currentLanguageOption, speak]);
-
-  const stopSpeaking = useCallback(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-    }
-  }, []);
 
   // Speech Recognition (Voice-to-Text) with full fallback support
   const startListening = useCallback((onResult?: (text: string) => void) => {

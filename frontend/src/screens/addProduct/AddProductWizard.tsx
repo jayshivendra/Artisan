@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
 import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
@@ -50,6 +50,25 @@ export const AddProductWizard: React.FC = () => {
   const [detectedLangName, setDetectedLangName] = useState<string>('Hindi & English');
 
   const step = productDraft.step;
+
+  const cameraInputRef = useRef<HTMLInputElement | null>(null);
+  const galleryInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleTriggerCamera = () => {
+    playChime('tap');
+    if (cameraInputRef.current) {
+      cameraInputRef.current.value = '';
+      cameraInputRef.current.click();
+    }
+  };
+
+  const handleTriggerGallery = () => {
+    playChime('tap');
+    if (galleryInputRef.current) {
+      galleryInputRef.current.value = '';
+      galleryInputRef.current.click();
+    }
+  };
 
   // Real AI Studio enhancement processing on any photo (uploaded, captured, or sample)
   const triggerEnhancement = async (
@@ -119,10 +138,10 @@ export const AddProductWizard: React.FC = () => {
       playChime('tap');
       const file = e.target.files[0];
       const reader = new FileReader();
-      reader.onload = (event) => {
-        const url = event.target?.result as string;
-        updateProductDraft({ photoUrl: url });
-        triggerEnhancement(url, 'studio');
+      reader.onload = async (event) => {
+        const rawUrl = event.target?.result as string;
+        updateProductDraft({ photoUrl: rawUrl });
+        await triggerEnhancement(rawUrl, 'studio');
       };
       reader.readAsDataURL(file);
     }
@@ -312,14 +331,15 @@ export const AddProductWizard: React.FC = () => {
             />
             <div className="relative z-10 flex flex-col items-center text-center p-4">
               <button
-                onClick={() => triggerEnhancement(productDraft.photoUrl, 'studio')}
+                type="button"
+                onClick={handleTriggerCamera}
                 className="w-16 h-16 rounded-full bg-white text-artisan-terracotta shadow-2xl flex items-center justify-center hover:scale-110 active:scale-90 transition-transform mb-2"
                 title="Capture Photo"
               >
                 <Camera className="w-8 h-8 stroke-[2.5]" />
               </button>
               <span className="text-xs font-black drop-shadow bg-black/60 px-3 py-1 rounded-full">
-                Tap to Process with AI
+                Tap to Open Camera
               </span>
             </div>
 
@@ -338,21 +358,45 @@ export const AddProductWizard: React.FC = () => {
             isFixing={isEnhancing}
           />
 
-          {/* Dual Camera and Gallery Upload Actions */}
+          {/* Dual Camera and Gallery Upload Actions with Direct Ref Triggers */}
           <div className="space-y-2 pt-1">
             <div className="grid grid-cols-2 gap-2">
-              <label className="py-3.5 px-3 rounded-2xl bg-gradient-to-r from-artisan-terracotta to-orange-500 text-white font-black text-xs shadow-elevated flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95 transition-all text-center">
+              <button
+                type="button"
+                onClick={handleTriggerCamera}
+                className="py-3.5 px-3 rounded-2xl bg-gradient-to-r from-artisan-terracotta to-orange-500 text-white font-black text-xs shadow-elevated flex items-center justify-center space-x-1.5 active:scale-95 transition-all text-center"
+              >
                 <Camera className="w-4 h-4 stroke-[2.5]" />
                 <span>📸 Open Camera</span>
-                <input type="file" accept="image/*" capture="environment" onChange={handleFileUpload} className="hidden" />
-              </label>
+              </button>
 
-              <label className="py-3.5 px-3 rounded-2xl bg-stone-900 text-white font-black text-xs shadow-sm flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95 transition-all text-center">
+              <button
+                type="button"
+                onClick={handleTriggerGallery}
+                className="py-3.5 px-3 rounded-2xl bg-stone-900 text-white font-black text-xs shadow-sm flex items-center justify-center space-x-1.5 active:scale-95 transition-all text-center"
+              >
                 <Upload className="w-4 h-4 stroke-[2.5]" />
                 <span>🖼️ Phone Gallery</span>
-                <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
-              </label>
+              </button>
             </div>
+
+            {/* Hidden native input elements */}
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+            <input
+              ref={galleryInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+          </div>
 
             {/* Quick Demo Craft Photos */}
             <div>
@@ -377,7 +421,6 @@ export const AddProductWizard: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
       )}
 
       {/* ========================================================================= */}

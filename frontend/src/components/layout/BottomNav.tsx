@@ -27,7 +27,7 @@ export const BottomNav: React.FC = () => {
   // BUYER MODE NAVIGATION
   if (userRole === 'buyer') {
     return (
-      <nav aria-label="Buyer Navigation" className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200/80 shadow-nav z-40 px-2 py-1.5 flex items-center justify-around select-none">
+      <nav aria-label="Buyer Navigation" className="fixed sm:absolute bottom-0 left-0 right-0 max-w-full sm:max-w-[404px] mx-auto bg-white/95 backdrop-blur-md border-t border-stone-200/80 shadow-nav z-40 px-2 py-1.5 flex items-center justify-around select-none pb-[max(0.375rem,env(safe-area-inset-bottom))]">
         {/* 1. Explore Marketplace */}
         <button
           onClick={() => handleNav('buyer_marketplace')}
@@ -121,7 +121,7 @@ export const BottomNav: React.FC = () => {
 
   // SELLER / ARTISAN MODE NAVIGATION
   return (
-    <nav aria-label="Main Navigation" className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200/80 shadow-nav z-40 px-2 py-1.5 flex items-center justify-around select-none">
+    <nav aria-label="Main Navigation" className="fixed sm:absolute bottom-0 left-0 right-0 max-w-full sm:max-w-[404px] mx-auto bg-white/95 backdrop-blur-md border-t border-stone-200/80 shadow-nav z-40 px-2 py-1.5 flex items-center justify-around select-none pb-[max(0.375rem,env(safe-area-inset-bottom))]">
       {/* 1. Home */}
       <button
         onClick={() => handleNav('home')}

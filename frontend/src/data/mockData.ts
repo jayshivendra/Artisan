@@ -22,7 +22,7 @@ export const SAMPLE_HANDICRAFT_PHOTOS = [
     making_days: 3,
     raw_cost: 250,
     labour_cost: 450,
-    original: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=800&auto=format&fit=crop&q=80',
+    original: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&auto=format&fit=crop&q=80',
     enhanced: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=800&auto=format&fit=crop&q=80',
     speech_en: 'This water jug is made from riverbed terracotta clay. Keeps drinking water naturally cool.',
     speech_hi: 'यह पानी का जग शुद्ध मिट्टी से बना है। यह पानी को स्वाभाविक रूप से ठंडा रखता है।'
@@ -35,7 +35,7 @@ export const SAMPLE_HANDICRAFT_PHOTOS = [
     making_days: 8,
     raw_cost: 3200,
     labour_cost: 2800,
-    original: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&auto=format&fit=crop&q=80',
+    original: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800&auto=format&fit=crop&q=80',
     enhanced: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&auto=format&fit=crop&q=80',
     speech_en: 'Pure silk handwoven saree using double ikat geometric techniques. Rich festive design.',
     speech_hi: 'शुद्ध रेशम से हथकरघे पर बुनी गई पारंपरिक इकत साड़ी। उत्सवों के लिए उत्तम।'
@@ -48,7 +48,7 @@ export const SAMPLE_HANDICRAFT_PHOTOS = [
     making_days: 5,
     raw_cost: 750,
     labour_cost: 950,
-    original: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80',
+    original: 'https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2?w=800&auto=format&fit=crop&q=80',
     enhanced: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80',
     speech_en: 'Ancient lost-wax cast brass figurine of a tribal musician playing dholak.',
     speech_hi: 'प्राचीन ढोकरा तकनीक से बनी पीतल की आदिवासी संगीतकार मूर्ति।'
@@ -61,7 +61,7 @@ export const SAMPLE_HANDICRAFT_PHOTOS = [
     making_days: 4,
     raw_cost: 650,
     labour_cost: 800,
-    original: 'https://images.unsplash.com/photo-1546484475-7f7bd55792da?w=800&auto=format&fit=crop&q=80',
+    original: 'https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=800&auto=format&fit=crop&q=80',
     enhanced: 'https://images.unsplash.com/photo-1546484475-7f7bd55792da?w=800&auto=format&fit=crop&q=80',
     speech_en: 'This decorative trinket box is carved by hand from seasoned sheesham wood with floral brass inlay.',
     speech_hi: 'यह सुंदर लकड़ी का बॉक्स हाथ से शीशम की लकड़ी पर पीतल की नक्काशी करके बनाया गया है।'
@@ -74,7 +74,7 @@ export const SAMPLE_HANDICRAFT_PHOTOS = [
     making_days: 2,
     raw_cost: 200,
     labour_cost: 350,
-    original: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=800&auto=format&fit=crop&q=80',
+    original: 'https://images.unsplash.com/photo-1590736969955-71cc94801759?w=800&auto=format&fit=crop&q=80',
     enhanced: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=800&auto=format&fit=crop&q=80',
     speech_en: 'Eco-friendly hand-knotted jute macrame hanger for indoor plants and balcony decor.',
     speech_hi: 'घर और बालकनी की सजावट के लिए प्राकृतिक जूट से हाथ से बुना गया हैंगिंग प्लांटर।'
