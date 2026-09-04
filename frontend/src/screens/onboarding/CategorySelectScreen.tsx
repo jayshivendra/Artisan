@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
-import { useVoice } from '../../context/VoiceContext.js';
+import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
+import { StepGuidanceBanner } from '../../components/common/StepGuidanceBanner.js';
 import { Check, ArrowRight, Sparkles, Volume2 } from 'lucide-react';
 
 interface CraftCategoryCard {
@@ -120,6 +121,13 @@ export const CategorySelectScreen: React.FC = () => {
         <p className="text-xs text-stone-600 font-medium mt-1">
           {t('select_categories_hint')}
         </p>
+
+        <StepGuidanceBanner
+          stepNumber={2}
+          totalSteps={3}
+          title={t('what_do_you_make')}
+          guidanceText={t('onboarding_cat_guidance') || AUDIO_GUIDANCE_BY_LANG.onboarding_cat?.[language]}
+        />
       </div>
 
       {/* High-Contrast Category Cards Grid */}

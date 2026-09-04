@@ -3,6 +3,7 @@ import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
 import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
 import { Header } from '../../components/layout/Header.js';
+import { StepGuidanceBanner } from '../../components/common/StepGuidanceBanner.js';
 import { StatusBadge } from '../../components/common/StatusBadge.js';
 import { ShoppingBag, ArrowRight, Package, Truck, CheckCircle2, Phone, MapPin } from 'lucide-react';
 
@@ -38,6 +39,11 @@ export const OrderListScreen: React.FC = () => {
       />
 
       <div className="p-4 space-y-3">
+        <StepGuidanceBanner
+          title={t('nav_orders')}
+          guidanceText={AUDIO_GUIDANCE_BY_LANG.orders?.[language] || `You have ${orders.filter(o => o.status === 'new').length} new orders. Tap on any order to view customer delivery details.`}
+          autoSpeak={false}
+        />
         {/* Status Tabs */}
         <div className="flex items-center space-x-1.5 overflow-x-auto pb-1">
           {[

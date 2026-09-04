@@ -3,6 +3,7 @@ import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
 import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
 import { Header } from '../../components/layout/Header.js';
+import { StepGuidanceBanner } from '../../components/common/StepGuidanceBanner.js';
 import { QuotationModal } from '../../components/modals/QuotationModal.js';
 import { BuyerRequirement } from '../../types/index.js';
 import { 
@@ -62,6 +63,11 @@ export const FindBuyersScreen: React.FC = () => {
       />
 
       <div className="p-4 space-y-3">
+        <StepGuidanceBanner
+          title={t('b2b_title')}
+          guidanceText={AUDIO_GUIDANCE_BY_LANG.buyers?.[language] || "Here are bulk buyers and hotels looking for authentic artisan creations. Tap Send My Products to submit wholesale prices."}
+          autoSpeak={false}
+        />
         {/* Intro Card */}
         <div className="bg-gradient-to-tr from-stone-900 to-indigo-950 text-white rounded-3xl p-4 shadow-xl border border-stone-800 flex items-center justify-between">
           <div>

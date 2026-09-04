@@ -7,6 +7,7 @@ import { BeforeAfterSlider } from '../../components/common/BeforeAfterSlider.js'
 import { VoiceButton } from '../../components/common/VoiceButton.js';
 import { StatusBadge } from '../../components/common/StatusBadge.js';
 import { AudioGuidancePlayer } from '../../components/common/AudioGuidancePlayer.js';
+import { StepGuidanceBanner } from '../../components/common/StepGuidanceBanner.js';
 import { QualityCheckerCard } from '../../components/common/QualityCheckerCard.js';
 import { PricingCalculatorCard } from '../../components/common/PricingCalculatorCard.js';
 import { ProductReadinessMeter } from '../../components/common/ProductReadinessMeter.js';
@@ -313,6 +314,12 @@ export const AddProductWizard: React.FC = () => {
       {/* ========================================================================= */}
       {step === 1 && (
         <div className="p-4 space-y-4 animate-in fade-in">
+          <StepGuidanceBanner
+            stepNumber={1}
+            totalSteps={6}
+            title={t('step1_title')}
+            guidanceText={t('step1_guidance') || AUDIO_GUIDANCE_BY_LANG.step1?.[language]}
+          />
           <div>
             <h2 className="text-xl font-black text-stone-900 leading-tight">
               Step 1: Take ONE Product Photo
@@ -428,6 +435,32 @@ export const AddProductWizard: React.FC = () => {
       {/* ========================================================================= */}
       {step === 2 && (
         <div className="p-4 space-y-4 animate-in fade-in">
+          <StepGuidanceBanner
+            stepNumber={2}
+            totalSteps={6}
+            title={t('step2_title')}
+            guidanceText={t('step2_guidance') || AUDIO_GUIDANCE_BY_LANG.step2?.[language]}
+          />
+
+          {/* AI Background Noise Removal Status Banner */}
+          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between shadow-sm">
+            <div className="flex items-center space-x-2.5">
+              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-sm">
+                ✨
+              </div>
+              <div>
+                <h4 className="text-xs font-black text-emerald-900 leading-tight">
+                  {t('bg_noise_removed') || '✨ Background Noise Removed'}
+                </h4>
+                <p className="text-[10px] text-emerald-700 font-medium mt-0.5">
+                  {t('bg_noise_sub') || 'AI stripped away room clutter, floor textures, and wall shadows'}
+                </p>
+              </div>
+            </div>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[9px] font-black uppercase tracking-wider shrink-0">
+              5500K Studio
+            </span>
+          </div>
           <div>
             <div className="flex items-center space-x-1.5 text-artisan-terracotta text-xs font-black uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
@@ -515,6 +548,12 @@ export const AddProductWizard: React.FC = () => {
       {/* ========================================================================= */}
       {step === 3 && (
         <div className="p-4 space-y-4 animate-in fade-in">
+          <StepGuidanceBanner
+            stepNumber={3}
+            totalSteps={6}
+            title={t('step3_title')}
+            guidanceText={t('step3_guidance') || AUDIO_GUIDANCE_BY_LANG.step3?.[language]}
+          />
           <div>
             <div className="flex items-center space-x-1.5 text-artisan-indigo text-xs font-black uppercase tracking-wider">
               <Mic className="w-3.5 h-3.5" />
@@ -607,6 +646,12 @@ export const AddProductWizard: React.FC = () => {
       {/* ========================================================================= */}
       {step === 4 && (
         <div className="p-4 space-y-4 animate-in fade-in">
+          <StepGuidanceBanner
+            stepNumber={4}
+            totalSteps={6}
+            title={t('step4_title')}
+            guidanceText={t('step4_guidance') || AUDIO_GUIDANCE_BY_LANG.step4?.[language]}
+          />
           <div>
             <div className="flex items-center space-x-1.5 text-artisan-terracotta text-xs font-black uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
@@ -791,6 +836,12 @@ export const AddProductWizard: React.FC = () => {
       {/* ========================================================================= */}
       {step === 5 && (
         <div className="p-4 space-y-4 animate-in fade-in">
+          <StepGuidanceBanner
+            stepNumber={5}
+            totalSteps={6}
+            title={t('step5_title')}
+            guidanceText={t('step5_guidance') || AUDIO_GUIDANCE_BY_LANG.step5?.[language]}
+          />
           <div>
             <div className="flex items-center space-x-1.5 text-emerald-600 text-xs font-black uppercase tracking-wider">
               <DollarSign className="w-3.5 h-3.5" />
@@ -844,6 +895,12 @@ export const AddProductWizard: React.FC = () => {
       {/* ========================================================================= */}
       {step === 6 && (
         <div className="p-4 space-y-4 animate-in fade-in">
+          <StepGuidanceBanner
+            stepNumber={6}
+            totalSteps={6}
+            title={t('step6_title')}
+            guidanceText={t('step6_guidance') || AUDIO_GUIDANCE_BY_LANG.step6?.[language]}
+          />
           <div>
             <div className="flex items-center space-x-1.5 text-artisan-terracotta text-xs font-black uppercase tracking-wider">
               <CheckCircle2 className="w-3.5 h-3.5" />
@@ -951,6 +1008,10 @@ export const AddProductWizard: React.FC = () => {
       {/* ========================================================================= */}
       {step === 7 && (
         <div className="p-6 my-auto flex flex-col items-center justify-center text-center space-y-5 animate-in zoom-in-95 duration-300">
+          <StepGuidanceBanner
+            title={t('step7_celebration_title')}
+            guidanceText={t('step7_guidance') || AUDIO_GUIDANCE_BY_LANG.step7?.[language]}
+          />
           <div className="relative">
             <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-2xl animate-bounce">
               <CheckCircle2 className="w-12 h-12 stroke-[2.5]" />

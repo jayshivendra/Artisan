@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
-import { useVoice } from '../../context/VoiceContext.js';
+import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
+import { StepGuidanceBanner } from '../../components/common/StepGuidanceBanner.js';
 import { User, MapPin, Phone, Store, ArrowRight, Camera, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const ProfileSetupScreen: React.FC = () => {
   const { navigateTo, user, updateUser } = useAppState();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { playChime, speak } = useVoice();
 
   const [name, setName] = useState<string>(user.name || 'Lakshmi Devi');
@@ -38,17 +39,17 @@ export const ProfileSetupScreen: React.FC = () => {
       'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80'
     ];
-    const nextIdx = (sampleAvatars.indexOf(avatar) + 1) % sampleAvatars.length;
-    setAvatar(sampleAvatars[nextIdx]);
+    const nextIndex = (sampleAvatars.indexOf(avatar) + 1) % sampleAvatars.length;
+    setAvatar(sampleAvatars[nextIndex]);
   };
 
   return (
-    <div className="min-h-full flex flex-col justify-between p-6 bg-stone-50 select-none">
+    <div className="min-h-full flex flex-col justify-between p-6 bg-stone-50 select-none pb-8">
       {/* Header */}
       <div className="pt-2">
-        <div className="flex items-center space-x-2 text-artisan-terracotta font-black text-xs uppercase tracking-wider mb-1">
+        <div className="flex items-center space-x-2 text-emerald-600 font-black text-xs uppercase tracking-wider mb-1">
           <Sparkles className="w-4 h-4" />
-          <span>Final Step</span>
+          <span>Step 3 of 3</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-black text-stone-900 leading-tight">
           {t('profile_title')}
@@ -56,6 +57,13 @@ export const ProfileSetupScreen: React.FC = () => {
         <p className="text-xs text-stone-700 font-medium mt-1">
           {t('profile_sub')}
         </p>
+
+        <StepGuidanceBanner
+          stepNumber={3}
+          totalSteps={3}
+          title={t('profile_title')}
+          guidanceText={t('onboarding_profile_guidance') || AUDIO_GUIDANCE_BY_LANG.onboarding_profile?.[language]}
+        />
       </div>
 
       {/* Form Fields */}

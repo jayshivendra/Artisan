@@ -3,6 +3,7 @@ import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
 import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
 import { Header } from '../../components/layout/Header.js';
+import { StepGuidanceBanner } from '../../components/common/StepGuidanceBanner.js';
 import { 
   Camera, 
   Package, 
@@ -93,6 +94,13 @@ export const HomeDashboard: React.FC = () => {
             className="w-12 h-12 rounded-full object-cover border-2 border-artisan-terracotta shadow"
           />
         </div>
+
+        {/* Step-by-Step Voice Guidance Card with 1-Tap Toggle */}
+        <StepGuidanceBanner
+          title={t('business_overview')}
+          guidanceText={AUDIO_GUIDANCE_BY_LANG.home?.[language]}
+          autoSpeak={false}
+        />
 
         {/* Minimalist 5-Stat Summary Card */}
         <div className="bg-white rounded-3xl border border-stone-200/90 p-4 shadow-sm space-y-3">

@@ -6,6 +6,9 @@ import { SUPPORTED_LANGUAGES } from '../../data/translations.js';
 import { LanguageCode } from '../../types/index.js';
 import { Check, ArrowRight, Volume2, Globe } from 'lucide-react';
 
+import { StepGuidanceBanner } from '../../components/common/StepGuidanceBanner.js';
+import { AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
+
 export const LanguageSelectScreen: React.FC = () => {
   const { navigateTo } = useAppState();
   const { language, setLanguage, t } = useLanguage();
@@ -36,6 +39,13 @@ export const LanguageSelectScreen: React.FC = () => {
         <p className="text-xs text-stone-700 font-medium mt-1">
           {t('choose_language_sub')}
         </p>
+
+        <StepGuidanceBanner
+          stepNumber={1}
+          totalSteps={3}
+          title={t('choose_language')}
+          guidanceText={t('onboarding_lang_guidance') || AUDIO_GUIDANCE_BY_LANG.onboarding_lang?.[language]}
+        />
       </div>
 
       {/* Language Selection Grid */}

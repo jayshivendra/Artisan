@@ -3,6 +3,7 @@ import { useAppState } from '../../context/AppStateContext.js';
 import { useLanguage } from '../../context/LanguageContext.js';
 import { useVoice, AUDIO_GUIDANCE_BY_LANG } from '../../context/VoiceContext.js';
 import { Header } from '../../components/layout/Header.js';
+import { StepGuidanceBanner } from '../../components/common/StepGuidanceBanner.js';
 import { StatusBadge } from '../../components/common/StatusBadge.js';
 import { Plus, Copy, Share2, Trash2, Edit3, Sparkles, Filter, Search } from 'lucide-react';
 
@@ -65,6 +66,11 @@ export const ProductListScreen: React.FC = () => {
       />
 
       <div className="p-4 space-y-3">
+        <StepGuidanceBanner
+          title={t('nav_products')}
+          guidanceText={AUDIO_GUIDANCE_BY_LANG.my_products?.[language] || `You have ${products.length} products listed. Tap on any card to edit price, stock or view details.`}
+          autoSpeak={false}
+        />
         {/* Top Controls: Search and Add Button */}
         <div className="flex items-center space-x-2">
           <div className="flex-1 relative">
