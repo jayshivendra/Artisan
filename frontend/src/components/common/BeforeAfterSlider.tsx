@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useLanguage } from '../../context/LanguageContext.js';
 import { Sparkles, Sliders } from 'lucide-react';
 
 interface BeforeAfterSliderProps {
@@ -11,9 +12,12 @@ interface BeforeAfterSliderProps {
 export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
   beforeImage,
   afterImage,
-  beforeLabel = 'Original Photo',
-  afterLabel = 'AI Studio Enhanced'
+  beforeLabel,
+  afterLabel
 }) => {
+  const { t } = useLanguage();
+  const effectiveBeforeLabel = beforeLabel || t('slider_before') || 'Original (with Background Noise)';
+  const effectiveAfterLabel = afterLabel || t('slider_after') || 'AI Background Noise Removed';
   const [sliderPosition, setSliderPosition] = useState<number>(50);
   const [containerWidth, setContainerWidth] = useState<number>(400);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -111,11 +115,11 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
 
       {/* Badges */}
       <div className="absolute top-3 left-3 z-30 bg-black/75 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow pointer-events-none border border-white/20">
-        {beforeLabel}
+        {effectiveBeforeLabel}
       </div>
-      <div className="absolute top-3 right-3 z-30 bg-artisan-terracotta backdrop-blur-md text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow flex items-center space-x-1 pointer-events-none border border-white/20">
+      <div className="absolute top-3 right-3 z-30 bg-emerald-700 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow flex items-center space-x-1 pointer-events-none border border-white/20">
         <Sparkles className="w-3 h-3 text-amber-300" />
-        <span>{afterLabel}</span>
+        <span>{effectiveAfterLabel}</span>
       </div>
 
       {/* Vertical Split Line and Draggable Knob */}

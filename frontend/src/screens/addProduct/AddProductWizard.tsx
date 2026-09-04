@@ -208,7 +208,7 @@ export const AddProductWizard: React.FC = () => {
           readiness_score: 91,
           step: 4
         });
-        speak('AI extracted product details: Handcrafted Bamboo Storage Basket. Home and Decor storage.');
+        speak(AUDIO_GUIDANCE_BY_LANG.step4?.[language] || t('step4_guidance'), currentLanguageOption.voiceLang);
       } else {
         updateProductDraft({ step: 4 });
       }
@@ -257,27 +257,20 @@ export const AddProductWizard: React.FC = () => {
     addProduct(newProd);
     updateProductDraft({ step: 7 });
     confetti({ particleCount: 130, spread: 85, origin: { y: 0.6 } });
-    speak(`Congratulations! ${newProd.name} is now published and matched with 3 direct B2B buyers.`);
+    speak(AUDIO_GUIDANCE_BY_LANG.step7?.[language] || t('step7_guidance'), currentLanguageOption.voiceLang);
   };
 
   return (
     <div className="flex flex-col min-h-full bg-stone-50 select-none pb-8">
       {step !== 7 && (
         <Header
-          title={`KarigarConnect AI (Step ${step} of 6)`}
+          title={`KarigarConnect AI (${t('step_prefix') || 'Step'} ${step} ${t('of_steps') || 'of'} 6)`}
           showBack={true}
           onBack={() => {
             if (step > 1) updateProductDraft({ step: step - 1 });
             else goBack();
           }}
-          audioGuideText={`Step ${step}: ${
-            step === 1 ? 'Take a photo of your craft. Cluttered backgrounds are fine, our AI will clean it.' :
-            step === 2 ? 'AI is removing background and correcting lighting.' :
-            step === 3 ? 'Press Speak and tell us about your product in your regional language.' :
-            step === 4 ? 'Review the auto-generated bilingual catalog listing.' :
-            step === 5 ? 'Review the transparent fair cost breakdown and recommended selling price.' :
-            'Verify your AI product readiness score and matched B2B buyers before publishing.'
-          }`}
+          audioGuideText={AUDIO_GUIDANCE_BY_LANG[`step${step}`]?.[language] || t(`step${step}_guidance`)}
         />
       )}
 
@@ -299,12 +292,12 @@ export const AddProductWizard: React.FC = () => {
             ))}
           </div>
           <div className="flex justify-between items-center text-[10px] font-bold text-stone-600 mt-1">
-            <span>1. Photo</span>
-            <span>2. AI Studio</span>
-            <span>3. Voice</span>
-            <span>4. Catalog</span>
-            <span>5. Pricing</span>
-            <span>6. Readiness</span>
+            <span>1. {t('nav_add') || 'Photo'}</span>
+            <span>2. {t('param_background') || 'Noise Removed'}</span>
+            <span>3. {t('step3_badge') || 'Voice'}</span>
+            <span>4. {t('step4_badge') || 'Catalog'}</span>
+            <span>5. {t('pricing_title') || 'Pricing'}</span>
+            <span>6. {t('step6_badge') || 'Readiness'}</span>
           </div>
         </div>
       )}
@@ -322,10 +315,10 @@ export const AddProductWizard: React.FC = () => {
           />
           <div>
             <h2 className="text-xl font-black text-stone-900 leading-tight">
-              Step 1: Take ONE Product Photo
+              {t('step1_title')}
             </h2>
             <p className="text-xs text-stone-600 font-medium mt-0.5">
-              Ordinary phone photo with messy background? No problem. AI will clean and studio-enhance it.
+              {t('step1_sub')}
             </p>
           </div>
 
@@ -346,7 +339,7 @@ export const AddProductWizard: React.FC = () => {
                 <Camera className="w-8 h-8 stroke-[2.5]" />
               </button>
               <span className="text-xs font-black drop-shadow bg-black/60 px-3 py-1 rounded-full">
-                Tap to Open Camera
+                {t('tap_to_open_camera')}
               </span>
             </div>
 
@@ -374,7 +367,7 @@ export const AddProductWizard: React.FC = () => {
                 className="py-3.5 px-3 rounded-2xl bg-gradient-to-r from-artisan-terracotta to-orange-500 text-white font-black text-xs shadow-elevated flex items-center justify-center space-x-1.5 active:scale-95 transition-all text-center"
               >
                 <Camera className="w-4 h-4 stroke-[2.5]" />
-                <span>📸 Open Camera</span>
+                <span>{t('open_camera')}</span>
               </button>
 
               <button
@@ -383,7 +376,7 @@ export const AddProductWizard: React.FC = () => {
                 className="py-3.5 px-3 rounded-2xl bg-stone-900 text-white font-black text-xs shadow-sm flex items-center justify-center space-x-1.5 active:scale-95 transition-all text-center"
               >
                 <Upload className="w-4 h-4 stroke-[2.5]" />
-                <span>🖼️ Phone Gallery</span>
+                <span>{t('phone_gallery')}</span>
               </button>
             </div>
 
@@ -464,13 +457,13 @@ export const AddProductWizard: React.FC = () => {
           <div>
             <div className="flex items-center space-x-1.5 text-artisan-terracotta text-xs font-black uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>AI Photo Studio</span>
+              <span>{t('step2_badge')}</span>
             </div>
             <h2 className="text-xl font-black text-stone-900 leading-tight mt-0.5">
-              Studio Background & Lighting Enhancement
+              {t('step2_title')}
             </h2>
             <p className="text-xs text-stone-600 font-medium">
-              Drag the slider to compare the raw domestic photo vs clean isolated studio shot.
+              {t('step2_sub')}
             </p>
           </div>
 
@@ -478,21 +471,21 @@ export const AddProductWizard: React.FC = () => {
           <BeforeAfterSlider
             beforeImage={productDraft.photoUrl}
             afterImage={productDraft.enhancedPhotoUrl}
-            beforeLabel="Ordinary Photo"
-            afterLabel="AI Studio Enhanced"
+            beforeLabel={t('slider_before')}
+            afterLabel={t('slider_after')}
           />
 
           {/* Studio Preset Backdrops */}
           <div>
             <label className="block text-xs font-extrabold text-stone-700 uppercase tracking-wider mb-1.5">
-              Select Studio Backdrop
+              {t('select_backdrop')}
             </label>
             <div className="grid grid-cols-4 gap-2">
               {[
-                { id: 'studio', label: 'Clean Studio', icon: '💡' },
-                { id: 'white', label: 'Pure White (GeM/Amazon)', icon: '⚪' },
-                { id: 'light', label: 'Warm Earth', icon: '🌾' },
-                { id: 'original', label: 'Original', icon: '📸' }
+                { id: 'white', label: t('backdrop_white'), icon: '⚪' },
+                { id: 'studio', label: t('backdrop_studio'), icon: '💡' },
+                { id: 'light', label: t('backdrop_earth'), icon: '🌾' },
+                { id: 'original', label: t('backdrop_original'), icon: '📸' }
               ].map(preset => (
                 <button
                   key={preset.id}
@@ -526,17 +519,17 @@ export const AddProductWizard: React.FC = () => {
               onClick={() => updateProductDraft({ step: 1 })}
               className="py-3.5 px-4 rounded-2xl bg-stone-100 text-stone-700 font-bold text-xs border border-stone-200 hover:bg-stone-200 active:scale-95"
             >
-              Try Another Photo
+              {t('try_another_photo')}
             </button>
             <button
               onClick={() => {
                 playChime('success');
                 updateProductDraft({ step: 3 });
-                speak('Now tell us about your product. Tap Speak and talk in your regional language.');
+                speak(AUDIO_GUIDANCE_BY_LANG.step3?.[language] || t('step3_guidance'), currentLanguageOption.voiceLang);
               }}
               className="flex-1 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-artisan-terracotta to-orange-500 text-white font-extrabold text-sm shadow-elevated flex items-center justify-center space-x-2 active:scale-95 hover:shadow-2xl"
             >
-              <span>Use Photo & Speak</span>
+              <span>{t('btn_use_clean_photo')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -557,20 +550,20 @@ export const AddProductWizard: React.FC = () => {
           <div>
             <div className="flex items-center space-x-1.5 text-artisan-indigo text-xs font-black uppercase tracking-wider">
               <Mic className="w-3.5 h-3.5" />
-              <span>Speak Instead of Typing</span>
+              <span>{t('step3_badge')}</span>
             </div>
             <h2 className="text-xl font-black text-stone-900 leading-tight mt-0.5">
-              Describe Your Product in Your Regional Language
+              {t('step3_title')}
             </h2>
             <p className="text-xs text-stone-600 font-medium">
-              No forms or complicated e-commerce jargon. Simply speak naturally.
+              {t('step3_sub')}
             </p>
           </div>
 
           {/* Spoken Guidance Prompt */}
           <AudioGuidancePlayer
-            title="What should you say?"
-            speechText="Tell us what this product is, what raw materials it is made from, how many days it took to make, and what it can be used for."
+            title={t('what_to_say')}
+            speechText={t('what_to_say_hint')}
           />
 
           {/* Large Voice Recording Button */}
@@ -587,13 +580,13 @@ export const AddProductWizard: React.FC = () => {
               <Globe className="w-3.5 h-3.5 text-indigo-600" />
               <span>Language: {detectedLangName}</span>
             </div>
-            <span className="text-[10px] text-indigo-600 font-semibold">Auto-Translates to English & Hindi</span>
+            <span className="text-[10px] text-indigo-600 font-semibold">{t('param_description')}</span>
           </div>
 
           {/* Transcription Display */}
           <div className="bg-white border border-stone-200 rounded-2xl p-4 shadow-sm space-y-2">
             <span className="text-[11px] font-extrabold text-stone-700 uppercase tracking-wider block">
-              Spoken Voice Transcript
+              {t('transcript_title')}
             </span>
             <textarea
               rows={3}
@@ -633,7 +626,7 @@ export const AddProductWizard: React.FC = () => {
               <RefreshCw className="w-5 h-5 animate-spin" />
             ) : (
               <>
-                <span>Generate AI Catalog Listing</span>
+                <span>{t('btn_transcribe_done')}</span>
                 <ArrowRight className="w-5 h-5 stroke-[2.5]" />
               </>
             )}
@@ -655,13 +648,13 @@ export const AddProductWizard: React.FC = () => {
           <div>
             <div className="flex items-center space-x-1.5 text-artisan-terracotta text-xs font-black uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>AI Auto-Cataloger</span>
+              <span>{t('step4_badge')}</span>
             </div>
             <h2 className="text-xl font-black text-stone-900 leading-tight mt-0.5">
-              Auto-Generated Product Catalog
+              {t('step4_title')}
             </h2>
             <p className="text-xs text-stone-600 font-medium">
-              AI extracted all attributes from your voice. You only verify: "Is this correct?"
+              {t('step4_sub')}
             </p>
           </div>
 
@@ -669,7 +662,7 @@ export const AddProductWizard: React.FC = () => {
           <div className="bg-white border border-stone-200 rounded-2xl p-4 shadow-sm space-y-3">
             <div>
               <label className="block text-[10px] font-extrabold text-stone-600 uppercase tracking-wider mb-1">
-                Product Title
+                {t('label_product_title')}
               </label>
               <input
                 type="text"
@@ -820,12 +813,12 @@ export const AddProductWizard: React.FC = () => {
               onClick={() => {
                 playChime('success');
                 updateProductDraft({ step: 5 });
-                speak(`AI calculates a fair base cost of ${productDraft.estimated_base_cost || 800} rupees. Recommended selling price: 899 to 999 rupees.`);
+                speak(AUDIO_GUIDANCE_BY_LANG.step5?.[language] || t('step5_guidance'), currentLanguageOption.voiceLang);
               }}
               className="w-full py-4 px-4 rounded-2xl bg-gradient-to-r from-artisan-terracotta to-orange-500 text-white font-black text-sm shadow-elevated flex items-center justify-center space-x-2 active:scale-95 hover:shadow-2xl"
             >
               <Check className="w-5 h-5 stroke-[2.5]" />
-              <span>Correct! Calculate Fair Price ➔</span>
+              <span>{t('btn_confirm_catalog')}</span>
             </button>
           </div>
         </div>
@@ -845,13 +838,13 @@ export const AddProductWizard: React.FC = () => {
           <div>
             <div className="flex items-center space-x-1.5 text-emerald-600 text-xs font-black uppercase tracking-wider">
               <DollarSign className="w-3.5 h-3.5" />
-              <span>Dynamic Pricing Assistant</span>
+              <span>{t('pricing_title')}</span>
             </div>
             <h2 className="text-xl font-black text-stone-900 leading-tight mt-0.5">
-              Cost-Plus & Market Calibration
+              {t('step5_title')}
             </h2>
             <p className="text-xs text-stone-600 font-medium">
-              Fair compensation for artisan labour combined with live market reference data.
+              {t('step5_sub')}
             </p>
           </div>
 
@@ -880,11 +873,11 @@ export const AddProductWizard: React.FC = () => {
             onClick={() => {
               playChime('success');
               updateProductDraft({ step: 6 });
-              speak('Auditing listing readiness and discovering direct B2B bulk buyers.');
+              speak(AUDIO_GUIDANCE_BY_LANG.step6?.[language] || t('step6_guidance'), currentLanguageOption.voiceLang);
             }}
             className="w-full py-4 px-4 rounded-2xl bg-gradient-to-r from-artisan-terracotta to-orange-500 text-white font-black text-sm shadow-elevated flex items-center justify-center space-x-2 active:scale-95 hover:shadow-2xl"
           >
-            <span>Review Readiness & B2B Matches</span>
+            <span>{t('btn_proceed_readiness')}</span>
             <ArrowRight className="w-5 h-5 stroke-[2.5]" />
           </button>
         </div>
@@ -904,13 +897,13 @@ export const AddProductWizard: React.FC = () => {
           <div>
             <div className="flex items-center space-x-1.5 text-artisan-terracotta text-xs font-black uppercase tracking-wider">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Listing Audit & Market Matching</span>
+              <span>{t('step6_badge')}</span>
             </div>
             <h2 className="text-xl font-black text-stone-900 leading-tight mt-0.5">
-              Product Readiness & Buyer Matches
+              {t('step6_title')}
             </h2>
             <p className="text-xs text-stone-600 font-medium">
-              Verified 9-point catalog audit and direct B2B market demand linkage.
+              {t('step6_sub')}
             </p>
           </div>
 
@@ -962,24 +955,24 @@ export const AddProductWizard: React.FC = () => {
           {/* Multi-Channel Distribution */}
           <div className="bg-white border border-stone-200 rounded-2xl p-4 shadow-sm space-y-2">
             <label className="block text-xs font-extrabold text-stone-900 uppercase tracking-wider mb-2">
-              Where will your product sell?
+              {t('channels_title')}
             </label>
             <div className="grid grid-cols-2 gap-2 text-xs font-bold text-stone-800">
               <div className="p-2 rounded-xl bg-stone-50 border border-stone-200 flex items-center space-x-2">
                 <Check className="w-4 h-4 text-emerald-600" />
-                <span>📱 Artisan App</span>
+                <span>📱 {t('channel_app')}</span>
               </div>
               <div className="p-2 rounded-xl bg-stone-50 border border-stone-200 flex items-center space-x-2">
                 <Check className="w-4 h-4 text-emerald-600" />
-                <span>🏛️ GeM / IndiaHandmade</span>
+                <span>🏛️ {t('channel_gem')}</span>
               </div>
               <div className="p-2 rounded-xl bg-stone-50 border border-stone-200 flex items-center space-x-2">
                 <Check className="w-4 h-4 text-emerald-600" />
-                <span>🤝 Wholesale B2B</span>
+                <span>🤝 {t('channel_b2b')}</span>
               </div>
               <div className="p-2 rounded-xl bg-stone-50 border border-stone-200 flex items-center space-x-2">
                 <Check className="w-4 h-4 text-emerald-600" />
-                <span>🌐 ONDC Open Network</span>
+                <span>🌐 {t('channel_ondc')}</span>
               </div>
             </div>
           </div>
@@ -997,7 +990,7 @@ export const AddProductWizard: React.FC = () => {
               className="flex-1 py-4 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-sm shadow-xl flex items-center justify-center space-x-2 active:scale-95 hover:shadow-2xl"
             >
               <Check className="w-5 h-5 stroke-[3]" />
-              <span>Publish & Connect with Buyers</span>
+              <span>{t('btn_publish')}</span>
             </button>
           </div>
         </div>
@@ -1021,10 +1014,10 @@ export const AddProductWizard: React.FC = () => {
 
           <div>
             <h2 className="text-2xl font-black text-stone-900 leading-tight">
-              Congratulations! Your Craft is Market-Ready!
+              {t('step7_celebration_title')}
             </h2>
             <p className="text-xs text-stone-600 font-medium mt-1 max-w-xs">
-              "One Photo + One Voice → Complete Digital Business Listing"
+              {t('step7_celebration_sub')}
             </p>
           </div>
 
@@ -1037,15 +1030,15 @@ export const AddProductWizard: React.FC = () => {
                 className="w-16 h-16 rounded-2xl object-cover border border-stone-200"
               />
               <div className="flex-1 min-w-0">
-                <span className="text-[10px] font-bold text-emerald-600 uppercase">Live Digital Listing</span>
+                <span className="text-[10px] font-bold text-emerald-600 uppercase">{t('step7_live_badge')}</span>
                 <h4 className="font-extrabold text-stone-900 text-sm truncate">{productDraft.name}</h4>
                 <span className="text-base font-black text-artisan-terracotta">₹{productDraft.selling_price.toLocaleString()}</span>
               </div>
             </div>
 
             <div className="mt-3 pt-2.5 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-stone-700">
-              <span>Readiness: <strong>91/100</strong></span>
-              <span className="text-emerald-700">🎯 3 B2B Buyers Matched</span>
+              <span>{t('step6_badge')}: <strong>91/100</strong></span>
+              <span className="text-emerald-700">{t('step7_buyers_matched')}</span>
             </div>
           </div>
 
@@ -1059,7 +1052,7 @@ export const AddProductWizard: React.FC = () => {
               className="w-full py-3.5 px-4 rounded-2xl bg-stone-900 text-white font-extrabold text-xs shadow-md active:scale-95 flex items-center justify-center space-x-2"
             >
               <Users className="w-4 h-4 text-amber-400" />
-              <span>View Matched B2B Buyers & Send Proposals</span>
+              <span>{t('btn_view_buyers')}</span>
             </button>
 
             <button
@@ -1069,7 +1062,7 @@ export const AddProductWizard: React.FC = () => {
               }}
               className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-artisan-terracotta to-orange-500 text-white font-extrabold text-xs shadow-elevated active:scale-95"
             >
-              View in My Products Catalog
+              {t('btn_view_catalog')}
             </button>
 
             <button
@@ -1079,7 +1072,7 @@ export const AddProductWizard: React.FC = () => {
               }}
               className="w-full py-3 px-4 rounded-2xl bg-stone-100 text-stone-800 font-bold text-xs border border-stone-200 hover:bg-stone-200 active:scale-95"
             >
-              + List Another Product
+              {t('btn_list_another')}
             </button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../../context/LanguageContext.js';
 import { CheckCircle2, AlertTriangle, XCircle, Sparkles } from 'lucide-react';
 
 interface ReadinessParam {
@@ -32,16 +33,18 @@ export const ProductReadinessMeter: React.FC<ProductReadinessMeterProps> = ({
   hasCategory = true,
   onAddDimensions
 }) => {
+  const { t } = useLanguage();
+
   const parameters: ReadinessParam[] = [
-    { name: 'Product Image', status: hasPhoto ? 'complete' : 'missing', detail: hasPhoto ? 'High-res source uploaded' : 'Image required' },
-    { name: 'Image Quality', status: isEnhanced ? 'complete' : 'warning', detail: isEnhanced ? '5500K balanced lighting' : 'Check exposure' },
-    { name: 'Background', status: isEnhanced ? 'complete' : 'warning', detail: isEnhanced ? 'Clean studio isolated' : 'Cluttered background' },
-    { name: 'Product Title', status: hasTitle ? 'complete' : 'missing', detail: hasTitle ? 'SEO optimized' : 'Title missing' },
-    { name: 'Description (Bilingual)', status: hasDescription ? 'complete' : 'missing', detail: hasDescription ? 'English & Hindi generated' : 'Describe craft' },
-    { name: 'Material & Craft Method', status: hasMaterial ? 'complete' : 'missing', detail: hasMaterial ? 'Authentic craft mapped' : 'Specify materials' },
-    { name: 'Fair Price', status: hasPrice ? 'complete' : 'warning', detail: hasPrice ? 'Within recommended range' : 'Needs review' },
-    { name: 'Dimensions', status: hasDimensions ? 'complete' : 'warning', detail: hasDimensions ? 'Specified (14" x 10")' : 'Recommended for B2B' },
-    { name: 'Category', status: hasCategory ? 'complete' : 'missing', detail: hasCategory ? 'National craft taxonomy' : 'Select category' }
+    { name: t('param_product_image') || 'Product Image', status: hasPhoto ? 'complete' : 'missing', detail: hasPhoto ? '✓' : '...' },
+    { name: t('param_image_quality') || 'Image Quality', status: isEnhanced ? 'complete' : 'warning', detail: isEnhanced ? '5500K ✓' : '...' },
+    { name: t('param_background') || 'Background Noise', status: isEnhanced ? 'complete' : 'warning', detail: isEnhanced ? (t('param_background_detail_clean') || 'Noise Removed') : (t('param_background_detail_noisy') || 'Noise Detected') },
+    { name: t('param_title') || 'Product Title', status: hasTitle ? 'complete' : 'missing', detail: hasTitle ? '✓' : '...' },
+    { name: t('param_description') || 'Description (Bilingual)', status: hasDescription ? 'complete' : 'missing', detail: hasDescription ? '✓' : '...' },
+    { name: t('param_materials') || 'Material & Craft Method', status: hasMaterial ? 'complete' : 'missing', detail: hasMaterial ? '✓' : '...' },
+    { name: t('param_price') || 'Fair Price', status: hasPrice ? 'complete' : 'warning', detail: hasPrice ? '✓' : '...' },
+    { name: t('param_dimensions') || 'Dimensions', status: hasDimensions ? 'complete' : 'warning', detail: hasDimensions ? '14" x 10"' : '...' },
+    { name: t('param_category') || 'Category', status: hasCategory ? 'complete' : 'missing', detail: hasCategory ? '✓' : '...' }
   ];
 
   const getStatusIcon = (status: ReadinessParam['status']) => {
@@ -62,10 +65,10 @@ export const ProductReadinessMeter: React.FC<ProductReadinessMeterProps> = ({
         <div>
           <div className="flex items-center space-x-1.5 text-artisan-terracotta text-xs font-black">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>AI Product Readiness Score</span>
+            <span>{t('step6_badge') || 'Listing Audit & Readiness Score'}</span>
           </div>
           <p className="text-[11px] text-stone-500 font-medium">
-            Pre-publishing e-commerce & B2B compliance audit
+            {t('step6_sub') || 'Pre-publishing e-commerce & B2B compliance audit'}
           </p>
         </div>
 
@@ -93,8 +96,8 @@ export const ProductReadinessMeter: React.FC<ProductReadinessMeterProps> = ({
           ></div>
         </div>
         <div className="flex justify-between text-[10px] font-bold text-stone-600">
-          <span>Catalog Audit: Ready for Buyers</span>
-          <span className="text-emerald-700">{score >= 90 ? '⭐⭐⭐ Top Tier Listing' : 'Good Quality'}</span>
+          <span>{t('step6_badge') || 'Catalog Audit'}: {t('step7_live_badge') || 'Ready'}</span>
+          <span className="text-emerald-700">{score >= 90 ? '⭐⭐⭐' : 'Good'}</span>
         </div>
       </div>
 
@@ -115,26 +118,6 @@ export const ProductReadinessMeter: React.FC<ProductReadinessMeterProps> = ({
           </div>
         ))}
       </div>
-
-      {/* Dynamic Recommendation Box */}
-      {!hasDimensions && (
-        <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
-            <span className="text-xs font-bold text-amber-950">
-              Add product dimensions to improve your listing to 100%
-            </span>
-          </div>
-          {onAddDimensions && (
-            <button
-              onClick={onAddDimensions}
-              className="text-[11px] font-black text-amber-900 underline hover:text-amber-700 shrink-0 ml-2"
-            >
-              Add (14" × 10")
-            </button>
-          )}
-        </div>
-      )}
     </div>
   );
 };

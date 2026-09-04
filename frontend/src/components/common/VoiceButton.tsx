@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../../context/LanguageContext.js';
 import { Mic, MicOff, Sparkles } from 'lucide-react';
 
 interface VoiceButtonProps {
@@ -12,10 +13,14 @@ interface VoiceButtonProps {
 export const VoiceButton: React.FC<VoiceButtonProps> = ({
   isListening,
   onPress,
-  label = 'Tap to Speak',
-  subLabel = 'AI will listen and understand',
+  label,
+  subLabel,
   size = 'large'
 }) => {
+  const { t } = useLanguage();
+  const effectiveLabel = label || t('btn_speak') || 'Tap to Speak';
+  const effectiveSubLabel = subLabel || t('speak_prompt_sub') || 'AI will listen and understand';
+
   return (
     <div className="flex flex-col items-center justify-center my-3 select-none">
       <button
@@ -48,11 +53,11 @@ export const VoiceButton: React.FC<VoiceButtonProps> = ({
 
       <div className="text-center mt-3">
         <h4 className="font-extrabold text-stone-900 text-base flex items-center justify-center space-x-1.5">
-          <span>{isListening ? 'Listening to your voice...' : label}</span>
+          <span>{isListening ? (t('btn_listening') || 'Listening to your voice...') : effectiveLabel}</span>
           {!isListening && <Sparkles className="w-4 h-4 text-amber-500" />}
         </h4>
         <p className="text-xs text-stone-700 font-medium max-w-xs mt-0.5">
-          {isListening ? 'Speak naturally in Telugu, Hindi, or any language' : subLabel}
+          {isListening ? (t('speak_prompt_sub') || 'Speak naturally in your language') : effectiveSubLabel}
         </p>
       </div>
     </div>

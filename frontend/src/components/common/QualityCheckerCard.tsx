@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../../context/LanguageContext.js';
 import { QualityCheckAlert } from '../../types/index.js';
 import { AlertTriangle, CheckCircle2, Sparkles } from 'lucide-react';
 
@@ -15,6 +16,8 @@ export const QualityCheckerCard: React.FC<QualityCheckerCardProps> = ({
   onAutoFix,
   isFixing = false
 }) => {
+  const { t } = useLanguage();
+
   return (
     <div className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
       isEnhanced 
@@ -37,19 +40,19 @@ export const QualityCheckerCard: React.FC<QualityCheckerCardProps> = ({
           )}
           <div>
             <h4 className="text-xs font-black text-stone-900 tracking-tight">
-              {isEnhanced ? 'AI Quality Audit Passed (Studio Grade)' : 'AI Catalog Quality Checker'}
+              {isEnhanced ? (t('audit_passed_title') || 'AI Quality Audit Passed (Noise Removed)') : (t('step2_badge') || 'AI Background Noise Removal')}
             </h4>
             <p className="text-[10px] text-stone-600 font-medium">
               {isEnhanced 
-                ? 'Ready for e-commerce marketplaces (Amazon, GeM, ONDC)' 
-                : `${alerts.length} optimization suggestions detected`}
+                ? (t('audit_ready_sub') || 'Ready for Amazon, GeM, and ONDC marketplaces') 
+                : `${alerts.length} ${t('audit_suggestions_detected') || 'suggestions detected'}`}
             </p>
           </div>
         </div>
 
         {!isEnhanced && (
           <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 border border-amber-300">
-            Action Needed
+            {t('audit_action_needed') || 'Action Needed'}
           </span>
         )}
       </div>
@@ -60,19 +63,19 @@ export const QualityCheckerCard: React.FC<QualityCheckerCardProps> = ({
           <div className="space-y-1.5 text-xs">
             <div className="flex items-center space-x-2 text-emerald-800 font-semibold text-[11px]">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Background clutter completely removed (100% object isolation)</span>
+              <span>{t('audit_check_noise_removed') || 'Background Noise & Room Clutter Removed'}</span>
             </div>
             <div className="flex items-center space-x-2 text-emerald-800 font-semibold text-[11px]">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Studio lighting normalized (5500K neutral daylight)</span>
+              <span>{t('audit_check_lighting') || '5500K Studio Lighting Calibrated'}</span>
             </div>
             <div className="flex items-center space-x-2 text-emerald-800 font-semibold text-[11px]">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Product auto-centered with 75% standard e-commerce fill</span>
+              <span>{t('audit_check_contrast') || 'Product Details & Textures Highlighted'}</span>
             </div>
             <div className="flex items-center space-x-2 text-emerald-800 font-semibold text-[11px]">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Soft grounded contact shadow added for realistic depth</span>
+              <span>{t('audit_check_market') || 'Pure White Noise-Free Background Ready'}</span>
             </div>
           </div>
         ) : (
@@ -95,10 +98,10 @@ export const QualityCheckerCard: React.FC<QualityCheckerCardProps> = ({
               type="button"
               onClick={onAutoFix}
               disabled={isFixing}
-              className="w-full mt-2 py-2.5 px-3 rounded-xl bg-gradient-to-r from-artisan-terracotta to-amber-600 text-white font-extrabold text-xs shadow-sm flex items-center justify-center space-x-1.5 active:scale-95 transition-all hover:shadow"
+              className="w-full mt-2 py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-extrabold text-xs shadow-sm flex items-center justify-center space-x-1.5 active:scale-95 transition-all hover:shadow"
             >
               <Sparkles className={`w-3.5 h-3.5 ${isFixing ? 'animate-spin' : ''}`} />
-              <span>{isFixing ? 'Processing Image Enhancement...' : '⚡ Auto-Improve Image (Studio AI)'}</span>
+              <span>{isFixing ? (t('btn_listening') || 'Processing...') : `⚡ ${t('step2_badge') || 'Remove Background Noise using AI'}`}</span>
             </button>
           </div>
         )}
